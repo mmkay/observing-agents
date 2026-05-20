@@ -69,7 +69,7 @@ openclaw_telemetry_exporter_events{openclaw_signal="traces", openclaw_status="st
 openclaw_telemetry_exporter_events{openclaw_signal="metrics", openclaw_status="started"}
 ```
 
-Both should have `value = 1` and `job = openclaw-gateway`.
+Both should have `value = 1` and `job = openclaw-gateway`. If only one series appears, one exporter failed to initialize cleanly — restart the gateway (`docker compose restart openclaw`).
 
 For traces, query Tempo after the first agent activity:
 
@@ -156,13 +156,29 @@ OpenClaw gateway (docker-compose)
 
 Setting `plugins.allow` to `["diagnostics-otel"]` restricts all plugins, including bundled ones. Either omit `plugins.allow` entirely (non-bundled plugins auto-load from `extensions/`) or list every plugin you need. The security warning about an empty allow list is informational and does not block operation.
 
+Removing `plugins.allow` from the config hot-reloads the key but does **not** retroactively load plugins that were excluded at startup. A gateway restart is required for the full plugin set to take effect:
+
+```bash
+docker compose restart openclaw
+```
+
 ### Traces not appearing in Tempo
 
-See [Sampling: COS tail-based sampler](#sampling-cos-tail-based-sampler). At the default workload sampling rate of 1 %, nearly all OpenClaw traces are dropped. Increase the rate to 100 % with the `juju config` command above.
+First check the plugin count:
+
+```bash
+docker logs openclaw | grep "http server listening" | tail -1
+```
+
+If the count is lower than expected (e.g. `2 plugins` instead of 9), see [Plugin loads but only 2 plugins appear](#plugin-loads-but-only-2-plugins-appear-in-the-gateway) below. Traces for runs that completed while the plugin was not loaded will never appear — only runs after a clean restart with the full plugin set will produce traces.
+
+If the plugin count is correct, check the sampling rate. See [Sampling: COS tail-based sampler](#sampling-cos-tail-based-sampler). At the default workload sampling rate of 1 %, nearly all OpenClaw traces are dropped. Increase the rate to 100 % with the `juju config` command above.
 
 ### Exporters started but no per-agent metrics in Prometheus
 
 The plugin only emits per-run metrics after an agent run completes. The `openclaw_telemetry_exporter_events` startup metrics appear immediately, but counters such as token usage require at least one completed run. Send a Telegram message or wait for the next scheduled cron job.
+
+If metrics still do not appear after a confirmed completed run, check the plugin count (see [Traces not appearing in Tempo](#traces-not-appearing-in-tempo)). A gateway running with a reduced plugin set due to a past `plugins.allow` restriction will not emit per-run metrics even though the startup metrics appeared.
 
 ### Endpoint unreachable from Docker container
 
