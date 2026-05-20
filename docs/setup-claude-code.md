@@ -40,6 +40,7 @@ export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative
 # Short export intervals — ensures data is flushed before the process exits
 export OTEL_METRIC_EXPORT_INTERVAL=1000
 export OTEL_LOGS_EXPORT_INTERVAL=1000
+export OTEL_TRACES_EXPORT_INTERVAL=1000
 ```
 
 | Variable | Example value | Notes |
@@ -52,12 +53,13 @@ export OTEL_LOGS_EXPORT_INTERVAL=1000
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` | Port 4318 is HTTP (not gRPC on 4317) |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://otelcol:4318` | Your OpenTelemetry Collector endpoint |
 | `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE` | `cumulative` | Required for Prometheus Remote Write backends (see below) |
-| `OTEL_METRIC_EXPORT_INTERVAL` | `1000` | 1 s; must be short for brief sessions |
-| `OTEL_LOGS_EXPORT_INTERVAL` | `1000` | 1 s; same reason |
+| `OTEL_METRIC_EXPORT_INTERVAL` | `1000` | 1 s; default is 60 s, far too long for brief sessions |
+| `OTEL_LOGS_EXPORT_INTERVAL` | `1000` | 1 s; default is 5 s, may miss data from very short sessions |
+| `OTEL_TRACES_EXPORT_INTERVAL` | `1000` | 1 s; default is 5 s, same reason |
 
 > **Important — metric temporality**: Claude Code defaults to `delta` temporality. If your collector exports to Prometheus via Remote Write (as COS does), you **must** set `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative`. Without this, only the `target_info` resource metric appears in Prometheus — all actual metric data points are silently dropped during the delta-to-cumulative conversion.
 
-> **Important**: The default metrics export interval (60 s) is far too long for short-lived CLI sessions. Setting it to 1000 ms ensures data is flushed before the process exits. Without this, metrics may never appear in your backend.
+> **Important**: The default metrics export interval (60 s) is far too long for short-lived CLI sessions. Setting it to 1000 ms ensures data is flushed before the process exits. Without this, metrics may never appear in your backend. The logs and traces export intervals default to 5 s, which is less critical but worth shortening for very brief sessions.
 
 Both `.bashrc` and `.profile` should contain these exports so they are available in interactive shells and login/non-interactive shells alike.
 
