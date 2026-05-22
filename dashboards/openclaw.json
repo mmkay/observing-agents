@@ -199,11 +199,11 @@
         },
         "overrides": [
           {
-            "matcher": { "id": "byLabelValue", "options": { "label": "openclaw_outcome", "value": "error" } },
+            "matcher": { "id": "byName", "options": "error" },
             "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }]
           },
           {
-            "matcher": { "id": "byLabelValue", "options": { "label": "openclaw_outcome", "value": "completed" } },
+            "matcher": { "id": "byName", "options": "completed" },
             "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }]
           }
         ]

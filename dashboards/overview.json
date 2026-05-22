@@ -44,6 +44,21 @@
         "query": "tempo",
         "refresh": 1,
         "type": "datasource"
+      },
+      {
+        "name": "openclaw_enable",
+        "label": "OpenClaw",
+        "type": "custom",
+        "query": "Include : openclaw-gateway,Exclude : NOOP_NO_MATCH",
+        "current": { "value": "openclaw-gateway", "text": "Include" },
+        "options": [
+          { "selected": true,  "text": "Include", "value": "openclaw-gateway" },
+          { "selected": false, "text": "Exclude", "value": "NOOP_NO_MATCH" }
+        ],
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "refresh": 0
       }
     ]
   },
@@ -107,7 +122,7 @@
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(openclaw_run_duration_ms_count[24h])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel)",
+          "expr": "sum(increase(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[24h])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel, openclaw_agent)",
           "legendFormat": "OpenClaw",
           "refId": "C",
           "instant": true
@@ -150,7 +165,7 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_token_usage[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, type, effort, query_source, model)",
+          "expr": "sum(increase(claude_code_token_usage[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, type, effort, query_source, model, terminal_type, agent_name, skill_name)",
           "legendFormat": "Claude Code",
           "refId": "A",
           "instant": true
@@ -164,7 +179,7 @@
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(openclaw_tokens[24h])) without (openclaw_model, openclaw_provider, openclaw_agent, openclaw_channel, openclaw_token)",
+          "expr": "sum(increase(openclaw_tokens{job=~\"$openclaw_enable\"}[24h])) without (openclaw_model, openclaw_provider, openclaw_agent, openclaw_channel, openclaw_token)",
           "legendFormat": "OpenClaw",
           "refId": "C",
           "instant": true
@@ -207,7 +222,7 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_cost_usage[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, effort, query_source)",
+          "expr": "sum(increase(claude_code_cost_usage[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, effort, query_source, terminal_type, agent_name, skill_name)",
           "legendFormat": "Claude Code",
           "refId": "A",
           "instant": true
@@ -257,7 +272,7 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(openclaw_run_duration_ms_count{openclaw_outcome=\"error\"}[24h])) without (openclaw_model, openclaw_provider, openclaw_channel)",
+          "expr": "sum(increase(openclaw_run_duration_ms_count{openclaw_outcome=\"error\",job=~\"$openclaw_enable\"}[24h])) without (openclaw_model, openclaw_provider, openclaw_channel, openclaw_agent)",
           "legendFormat": "OpenClaw errors",
           "refId": "A",
           "instant": true
@@ -313,7 +328,7 @@
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(openclaw_run_duration_ms_count[1h])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel)",
+          "expr": "sum(increase(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[1h])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel, openclaw_agent)",
           "legendFormat": "OpenClaw",
           "refId": "C"
         }
@@ -349,7 +364,7 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_cost_usage[1d])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, effort, query_source)",
+          "expr": "sum(increase(claude_code_cost_usage[1d])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, effort, query_source, terminal_type, agent_name, skill_name)",
           "legendFormat": "Claude Code",
           "refId": "A"
         },
@@ -363,11 +378,60 @@
     },
 
     {
+      "id": 18,
+      "type": "timeseries",
+      "title": "Token activity (1h buckets)",
+      "description": "Tokens consumed per 1h window, stacked by tool. Shows which hours and days are most active. A true UTC-hour × day-of-week heatmap requires the Grafana Calendar plugin or Prometheus recording rules with hour/day_of_week labels.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 14 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 80,
+            "stacking": { "mode": "normal", "group": "A" },
+            "drawStyle": "bars",
+            "gradientMode": "none",
+            "barAlignment": 0
+          },
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(claude_code_token_usage[1h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, type, effort, query_source, model, terminal_type, agent_name, skill_name)",
+          "legendFormat": "Claude Code",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(opencode_token_usage[1h])) without (session_id, project_id, type, agent, model)",
+          "legendFormat": "OpenCode",
+          "refId": "B"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(openclaw_tokens{openclaw_token=\"total\",job=~\"$openclaw_enable\"}[1h])) without (openclaw_model, openclaw_provider, openclaw_agent, openclaw_channel, openclaw_token)",
+          "legendFormat": "OpenClaw",
+          "refId": "C"
+        }
+      ]
+    },
+
+    {
       "id": 9,
       "type": "row",
       "title": "Session rhythm",
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 }
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 }
     },
 
     {
@@ -376,7 +440,7 @@
       "title": "Session rhythm — all tools (1h resolution)",
       "description": "Session count across all tools by hour of day over 7 days. Use this to spot peak usage hours. Stack = all tools combined.",
       "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 15 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 24 },
       "options": {
         "tooltip": { "mode": "multi", "sort": "none" },
         "legend": { "displayMode": "list", "placement": "bottom" }
@@ -411,7 +475,7 @@
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(openclaw_run_duration_ms_count[1h])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel)",
+          "expr": "sum(increase(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[1h])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel, openclaw_agent)",
           "legendFormat": "OpenClaw",
           "refId": "C"
         }
@@ -423,7 +487,7 @@
       "type": "row",
       "title": "Model usage",
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 }
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 32 }
     },
 
     {
@@ -432,7 +496,7 @@
       "title": "Token share by model (7d)",
       "description": "Proportion of tokens consumed per model across Claude Code and OpenCode over the selected range",
       "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "h": 9, "w": 10, "x": 0, "y": 24 },
+      "gridPos": { "h": 9, "w": 10, "x": 0, "y": 33 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "pieType": "pie",
@@ -465,7 +529,7 @@
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum by (openclaw_model) (increase(openclaw_tokens[$__range]))",
+          "expr": "sum by (openclaw_model) (increase(openclaw_tokens{job=~\"$openclaw_enable\"}[$__range]))",
           "legendFormat": "openclaw: {{openclaw_model}}",
           "refId": "C",
           "instant": true
@@ -479,7 +543,7 @@
       "title": "Tokens per day by model",
       "description": "Daily token consumption stacked by model across all tools — tracks model drift over time",
       "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "h": 9, "w": 14, "x": 10, "y": 24 },
+      "gridPos": { "h": 9, "w": 14, "x": 10, "y": 33 },
       "options": {
         "tooltip": { "mode": "multi", "sort": "none" },
         "legend": { "displayMode": "list", "placement": "bottom" }
@@ -514,7 +578,7 @@
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum by (openclaw_model) (increase(openclaw_tokens[1d]))",
+          "expr": "sum by (openclaw_model) (increase(openclaw_tokens{job=~\"$openclaw_enable\"}[1d]))",
           "legendFormat": "openclaw: {{openclaw_model}}",
           "refId": "C"
         }
@@ -526,7 +590,7 @@
       "type": "row",
       "title": "Error rates",
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 }
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 42 }
     },
 
     {
@@ -535,7 +599,7 @@
       "title": "OpenClaw error rate (%) — 1h rolling",
       "description": "Percentage of OpenClaw runs ending in error outcome over 1h rolling window",
       "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 34 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 43 },
       "options": {
         "tooltip": { "mode": "single", "sort": "none" },
         "legend": { "displayMode": "list", "placement": "bottom" }
@@ -566,7 +630,7 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(rate(openclaw_run_duration_ms_count{openclaw_outcome=\"error\"}[1h])) / sum(rate(openclaw_run_duration_ms_count[1h])) * 100",
+          "expr": "sum(rate(openclaw_run_duration_ms_count{openclaw_outcome=\"error\",job=~\"$openclaw_enable\"}[1h])) / sum(rate(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[1h])) * 100",
           "legendFormat": "OpenClaw error %",
           "refId": "A"
         }
@@ -578,7 +642,7 @@
       "type": "text",
       "title": "Claude Code & OpenCode error coverage",
       "description": "Notes on error rate approximation for tools without a dedicated error counter metric",
-      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 34 },
+      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 43 },
       "options": {
         "content": "### Error coverage per tool\n\n| Tool | Error signal | Where |\n|------|-------------|-------|\n| **OpenClaw** | `openclaw_outcome=\"error\"` on run histogram | Prometheus — metric in this row |\n| **Claude Code** | `api_error` log events | Loki — query `{job=\"claude-code\"} \\|= \"api_error\"` |\n| **OpenCode** | Span status in traces | Tempo — filter on `status=ERROR` |\n\nNo unified error counter exists across all tools. OpenClaw is the only tool with a direct Prometheus error rate.",
         "mode": "markdown"
@@ -590,7 +654,7 @@
       "type": "text",
       "title": "Per-tool dashboards",
       "description": "Quick links to individual tool dashboards",
-      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 38 },
+      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 47 },
       "options": {
         "content": "## Per-tool dashboards\n\n- [Claude Code](d/ao-claude-code)\n- [OpenCode](d/ao-opencode)\n- [OpenClaw](d/ao-openclaw)",
         "mode": "markdown"
@@ -598,5 +662,5 @@
     }
 
   ],
-  "version": 1
+  "version": 2
 }

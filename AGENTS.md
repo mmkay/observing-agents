@@ -22,35 +22,28 @@ The reference deployment uses the Canonical Observability Stack (COS), deployed 
 ```
 observing-agents/
 ├── AGENTS.md                    # This file
-├── README.md                    # Links to github.io, brief repo intro
+├── README.md                    # Brief repo intro
 ├── LICENSE                      # MIT
-├── presentation/
-│   ├── observing-agents.pdf     # Talk slides (Devoxx Poland 2026)
-│   └── diagrams/                # Supporting diagrams used in the talk
 ├── dashboards/
-│   ├── opencode.json            # Grafana dashboard for OpenCode
-│   └── claude-code.json         # Grafana dashboard for Claude Code
-├── docs/
-│   ├── index.md                 # GitHub Pages landing page
-│   ├── setup-opencode.md        # How to set up OpenCode observability
-│   ├── setup-claude-code.md     # How to set up Claude Code observability
-│   ├── reference-opencode.md    # Findings: signals, metrics, traces from OpenCode
-│   └── reference-claude-code.md # Findings: signals, metrics, traces from Claude Code
-└── .github/
-    └── workflows/
-        └── pages.yml            # GitHub Actions: build & deploy docs/ to GitHub Pages
+│   ├── overview.json            # Cross-tool overview dashboard (uid: ao-overview)
+│   ├── openclaw.json            # OpenClaw dashboard (uid: ao-openclaw)
+│   ├── opencode.json            # OpenCode dashboard (uid: ao-opencode)
+│   └── claude-code.json         # Claude Code dashboard (uid: ao-claude-code)
+└── docs/
+    ├── setup-opencode.md        # How to set up OpenCode observability
+    ├── setup-claude-code.md     # How to set up Claude Code observability
+    └── setup-openclaw.md        # How to set up OpenClaw observability
 ```
 
 ## Conventions
 
-- **By concern, not by tool**: dashboards live in `dashboards/`, setup guides and reference docs live in `docs/`. Each tool gets its own file in the relevant directory.
-- **Dashboards**: JSON files in `dashboards/` must be directly consumable by `cos-configuration-k8s`. They should be exportable Grafana dashboard JSON.
-- **Docs**: Written in Markdown. Built and served via GitHub Pages. No blog structure; flat reference pages with narratives woven in.
-- **Presentation**: PDF lives in `presentation/`. The website links to the raw file on GitHub. Diagrams used in the talk also live in `presentation/diagrams/`.
-- **Adding a new tool**: Create `<tool>.json` in `dashboards/`, `setup-<tool>.md` and `reference-<tool>.md` in `docs/`, and update `docs/index.md` to link to the new pages.
+- **By concern, not by tool**: dashboards live in `dashboards/`, setup guides live in `docs/`. Each tool gets its own file in the relevant directory.
+- **Dashboards**: JSON files in `dashboards/` must be directly consumable by `cos-configuration-k8s`. Dashboard UIDs follow the pattern `ao-<tool>`. Each dashboard defines three datasource template variables (`DS_PROMETHEUS`, `DS_LOKI`, `DS_TEMPO`) and references them in all panel targets.
+- **Docs**: Written in Markdown. Flat reference pages with setup steps and signal inventories.
+- **Adding a new tool**: create `dashboards/<tool>.json` following the conventions above (copy an existing dashboard as a starting point), and add `docs/setup-<tool>.md`.
 
-## Tools covered (current and planned)
+## Tools covered
 
-- **OpenCode**: Metrics and logs via OTel plugin; traces under investigation
-- **Claude Code**: Native OTel integration for metrics, logs, and experimental traces
-- **OpenClaw / ZeroClaw / others**: To be evaluated as the talk and research progress
+- **OpenCode**: Metrics and logs via OTel plugin; traces present (root span names currently blank — known plugin issue)
+- **Claude Code**: Native OTel integration; metrics, logs, and traces
+- **OpenClaw**: Full setup guide and Grafana dashboard; metrics and traces via OTel

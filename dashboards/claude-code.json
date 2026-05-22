@@ -208,7 +208,7 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_active_time_total[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id) / 3600000",
+          "expr": "sum(increase(claude_code_active_time_total[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id) / 3600",
           "legendFormat": "Active hours",
           "refId": "A"
         }
@@ -362,7 +362,7 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "(time() - max(last_over_time(claude_code_session_count[1d]))) / 3600",
+          "expr": "(time() - max(timestamp(claude_code_session_count))) / 3600",
           "legendFormat": "Hours since last metric",
           "refId": "A"
         }
