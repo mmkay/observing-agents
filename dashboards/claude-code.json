@@ -1,0 +1,734 @@
+{
+  "schemaVersion": 39,
+  "uid": "ao-claude-code",
+  "title": "Claude Code",
+  "tags": ["agents", "claude-code"],
+  "time": { "from": "now-7d", "to": "now" },
+  "refresh": "1m",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Today",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Sessions (24h)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "red", "value": 50 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(claude_code_session_count[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id)",
+          "legendFormat": "Sessions",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now-24h",
+      "timeShift": null
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Input + Output Tokens (24h)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 5, "x": 4, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 100000 },
+              { "color": "red", "value": 1000000 }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(claude_code_token_usage{type=~\"input|output\"}[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, type, effort, query_source)",
+          "legendFormat": "Tokens",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now-24h",
+      "timeShift": null
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Cost (USD, 24h)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 5, "x": 9, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "red", "value": 20 }
+            ]
+          },
+          "unit": "currencyUSD",
+          "decimals": 2
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(claude_code_cost_usage[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, effort, query_source)",
+          "legendFormat": "Cost",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now-24h",
+      "timeShift": null
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Lines of Code Written (24h)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 5, "x": 14, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 500 },
+              { "color": "red", "value": 5000 }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(claude_code_lines_of_code_count[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id)",
+          "legendFormat": "Lines",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now-24h",
+      "timeShift": null
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Active Time (hours, 24h)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 5, "x": 19, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 4 },
+              { "color": "red", "value": 12 }
+            ]
+          },
+          "unit": "h",
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(claude_code_active_time_total[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id) / 3600",
+          "legendFormat": "Active hours",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now-24h",
+      "timeShift": null
+    },
+    {
+      "id": 7,
+      "type": "row",
+      "title": "RED — Rate, Errors, Duration",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Session Rate (per hour)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line",
+            "spanNulls": false
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(claude_code_session_count[1h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
+          "legendFormat": "Sessions/hr",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "API Error Events (from logs)",
+      "description": "Error signal approximated from log events; no dedicated counter metric.",
+      "datasource": { "type": "datasource", "uid": "${DS_LOKI}" },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "bars"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_LOKI}" },
+          "expr": "sum(count_over_time({job=~\"$claude_code_job\"} |= \"api_error\" [$__interval]))",
+          "legendFormat": "API errors",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Session Duration p50/p95 (from Tempo)",
+      "description": "Derived from claude_code.interaction trace spans in Tempo; p50/p95 shown when trace data available.",
+      "datasource": { "type": "datasource", "uid": "${DS_TEMPO}" },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_TEMPO}" },
+          "queryType": "traceql",
+          "query": "{resource.service.name=\"claude-code\" && name=\"claude_code.interaction\"}",
+          "tableType": "spans",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "row",
+      "title": "Telemetry Health",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 }
+    },
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "Last Metric Received (hours ago)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 15 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 2 }
+            ]
+          },
+          "unit": "h",
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "(time() - max(timestamp(claude_code_session_count))) / 3600",
+          "legendFormat": "Hours since last metric",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "piechart",
+      "title": "Fresh vs Resume Sessions",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 6, "w": 8, "x": 6, "y": 15 },
+      "options": {
+        "pieType": "pie",
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "right" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (start_type) (increase(claude_code_session_count[$__range]))",
+          "legendFormat": "{{start_type}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "row",
+      "title": "Usage by Model",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 21 }
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "Tokens by Model & Type (stacked)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 22 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "drawStyle": "line",
+            "stacking": { "mode": "normal", "group": "A" }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (model, type) (increase(claude_code_token_usage[1h]))",
+          "legendFormat": "{{model}} - {{type}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Cost by Model (stacked)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 22 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "drawStyle": "bars",
+            "stacking": { "mode": "normal", "group": "A" }
+          },
+          "unit": "currencyUSD",
+          "decimals": 4
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (model) (increase(claude_code_cost_usage[1h]))",
+          "legendFormat": "{{model}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "Cost: Main vs Auxiliary (query_source)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 22 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 50,
+            "gradientMode": "none",
+            "drawStyle": "line",
+            "stacking": { "mode": "normal", "group": "A" }
+          },
+          "unit": "currencyUSD",
+          "decimals": 4
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (query_source) (increase(claude_code_cost_usage[1h]))",
+          "legendFormat": "{{query_source}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "row",
+      "title": "Cache Efficiency",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 30 }
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Cache Hit Rate",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 31 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(rate(claude_code_token_usage{type=\"cacheRead\"}[1h])) / (sum(rate(claude_code_token_usage{type=\"cacheRead\"}[1h])) + sum(rate(claude_code_token_usage{type=\"input\"}[1h])))",
+          "legendFormat": "Cache hit rate",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Cache Creation vs Cache Reads (stacked)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 31 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "drawStyle": "line",
+            "stacking": { "mode": "normal", "group": "A" }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (type) (increase(claude_code_token_usage{type=~\"cacheRead|cacheCreation\"}[1h]))",
+          "legendFormat": "{{type}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "row",
+      "title": "Model Drift (7d)",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 39 }
+    },
+    {
+      "id": 22,
+      "type": "barchart",
+      "title": "Tokens by Model per Day (7d)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 40 },
+      "options": {
+        "barWidth": 0.8,
+        "groupWidth": 0.7,
+        "stacking": "normal",
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "xField": "Time",
+        "orientation": "auto",
+        "fillOpacity": 80
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 80,
+            "stacking": { "mode": "normal", "group": "A" }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (model) (increase(claude_code_token_usage[1d]))",
+          "legendFormat": "{{model}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "type": "row",
+      "title": "Session Rhythm",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 48 }
+    },
+    {
+      "id": 24,
+      "type": "timeseries",
+      "title": "Session Rhythm (count by hour)",
+      "description": "Session count per hour over 7 days. Shows active coding hours and daily/weekly patterns.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 49 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "drawStyle": "bars"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "interval": "1h",
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(claude_code_session_count[1h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
+          "legendFormat": "Sessions",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "options": [],
+        "refresh": 1
+      },
+      {
+        "name": "DS_LOKI",
+        "label": "Loki",
+        "type": "datasource",
+        "query": "loki",
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "options": [],
+        "refresh": 1
+      },
+      {
+        "name": "DS_TEMPO",
+        "label": "Tempo",
+        "type": "datasource",
+        "query": "tempo",
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "options": [],
+        "refresh": 1
+      },
+      {
+        "name": "claude_code_job",
+        "label": "Claude Code Loki job",
+        "type": "custom",
+        "query": "claude-code",
+        "current": { "selected": true, "text": "claude-code", "value": "claude-code" },
+        "options": [{ "selected": true, "text": "claude-code", "value": "claude-code" }],
+        "hide": 0,
+        "includeAll": false,
+        "multi": false
+      }
+    ]
+  },
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "version": 1,
+  "weekStart": ""
+}
