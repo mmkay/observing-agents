@@ -283,7 +283,7 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_LOKI}" },
-          "expr": "sum(count_over_time({job=\"claude-code\"} |= \"api_error\" [$__interval]))",
+          "expr": "sum(count_over_time({job=~\"$claude_code_job\"} |= \"api_error\" [$__interval]))",
           "legendFormat": "API errors",
           "refId": "A"
         }
@@ -700,6 +700,17 @@
         "multi": false,
         "options": [],
         "refresh": 1
+      },
+      {
+        "name": "claude_code_job",
+        "label": "Claude Code Loki job",
+        "type": "custom",
+        "query": "claude-code",
+        "current": { "selected": true, "text": "claude-code", "value": "claude-code" },
+        "options": [{ "selected": true, "text": "claude-code", "value": "claude-code" }],
+        "hide": 0,
+        "includeAll": false,
+        "multi": false
       }
     ]
   },
