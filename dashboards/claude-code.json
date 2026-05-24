@@ -85,7 +85,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(increase(claude_code_session_count[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id)",
+          "expr": "sum(increase(claude_code_session_count[24h])) without (session_id, start_type, terminal_type, user_email, user_id, user_account_id, user_account_uuid, organization_id)",
           "legendFormat": "Sessions",
           "refId": "A"
         }
@@ -151,7 +151,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(increase(claude_code_token_usage{type=~\"input|output\"}[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, type, effort, query_source)",
+          "expr": "sum(increase(claude_code_token_usage{type=~\"input|output\"}[24h])) without (session_id, agent_name, skill_name, terminal_type, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, type, effort, query_source)",
           "legendFormat": "Tokens",
           "refId": "A"
         }
@@ -217,7 +217,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(increase(claude_code_cost_usage[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, effort, query_source)",
+          "expr": "sum(increase(claude_code_cost_usage[24h])) without (session_id, agent_name, skill_name, terminal_type, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, effort, query_source)",
           "legendFormat": "Cost",
           "refId": "A"
         }
@@ -283,7 +283,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(increase(claude_code_lines_of_code_count[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id)",
+          "expr": "sum(increase(claude_code_lines_of_code_count{type=\"added\"}[24h])) without (session_id, terminal_type, type, user_email, user_id, user_account_id, user_account_uuid, organization_id)",
           "legendFormat": "Lines",
           "refId": "A"
         }
@@ -349,7 +349,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(increase(claude_code_active_time_total[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id) / 3600",
+          "expr": "sum(increase(claude_code_active_time_total[24h])) without (session_id, terminal_type, type, user_email, user_id, user_account_id, user_account_uuid, organization_id) / 3600",
           "legendFormat": "Active hours",
           "refId": "A"
         }
