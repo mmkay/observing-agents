@@ -189,3 +189,34 @@ ip route | grep <service-cidr-prefix>
 ```
 
 If the route is absent, expose otelcol via a NodePort service or use host-network mode instead.
+
+### Metrics stop after a gateway in-process restart
+
+**Symptom:** OpenClaw dashboards show data up to a point in time and then go blank, even though the container is healthy, agents are running, and logs continue flowing. The `openclaw_telemetry_exporter_events` metric may show a brief data point right after the restart, then nothing.
+
+**Cause:** OpenClaw performs *in-process* gateway restarts (via SIGUSR1) for config hot-reloads (e.g. browser plugin changes, `plugins.allow` changes). These restarts reload all plugins without terminating the Node.js process. The OpenTelemetry SDK registers its MeterProvider as a module-level singleton — it survives the in-process restart unmodified. When the diagnostics-otel plugin re-initializes on top of the stale global MeterProvider, the periodic metric export interval breaks silently: one "last gasp" batch is sent and then the exporter freezes. No error is logged.
+
+**Identify:** Check when the data gap starts and compare against gateway restart events in the logs:
+
+```bash
+docker logs openclaw | grep "received SIGUSR1\|http server listening" | tail -10
+```
+
+If a restart lines up with the start of the data gap, this is the cause.
+
+**Fix:** Do a full container restart to reset all Node.js global state:
+
+```bash
+docker compose restart openclaw
+```
+
+The exporter re-initializes cleanly on the next container start. Verify within 60–90 seconds:
+
+```bash
+curl -s 'http://<prometheus>:9090/api/v1/query?query=openclaw_telemetry_exporter_events' \
+  | python3 -m json.tool
+```
+
+Both `openclaw_signal="metrics"` and `openclaw_signal="traces"` series should appear with a fresh timestamp.
+
+> **Note on verification:** The presence of `openclaw_telemetry_exporter_events{status="started"}` immediately after a restart does not confirm the exporter is healthy — a single "last gasp" batch fires even when the exporter is broken. A reliable check is to confirm the metric timestamp has advanced more than once across two consecutive flush intervals (default 5s each).
