@@ -407,20 +407,23 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_token_usage[1h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, type, effort, query_source, model, terminal_type, agent_name, skill_name)",
+          "expr": "sum(increase(claude_code_token_usage[$__interval])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, type, effort, query_source, model, terminal_type, agent_name, skill_name)",
           "legendFormat": "Claude Code",
+          "interval": "1h",
           "refId": "A"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(opencode_token_usage[1h])) without (session_id, project_id, type, agent, model)",
+          "expr": "sum(increase(opencode_token_usage[$__interval])) without (session_id, project_id, type, agent, model)",
           "legendFormat": "OpenCode",
+          "interval": "1h",
           "refId": "B"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(openclaw_tokens{openclaw_token=\"total\",job=~\"$openclaw_enable\"}[1h])) without (openclaw_model, openclaw_provider, openclaw_agent, openclaw_channel, openclaw_token)",
+          "expr": "sum(increase(openclaw_tokens{openclaw_token=\"total\",job=~\"$openclaw_enable\"}[$__interval])) without (openclaw_model, openclaw_provider, openclaw_agent, openclaw_channel, openclaw_token)",
           "legendFormat": "OpenClaw",
+          "interval": "1h",
           "refId": "C"
         }
       ]
@@ -566,20 +569,23 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum by (model) (increase(claude_code_token_usage[1d]))",
+          "expr": "sum by (model) (increase(claude_code_token_usage[$__interval]))",
           "legendFormat": "claude-code: {{model}}",
+          "interval": "1d",
           "refId": "A"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum by (model) (increase(opencode_token_usage[1d]))",
+          "expr": "sum by (model) (increase(opencode_token_usage[$__interval]))",
           "legendFormat": "opencode: {{model}}",
+          "interval": "1d",
           "refId": "B"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum by (openclaw_model) (increase(openclaw_tokens{job=~\"$openclaw_enable\"}[1d]))",
+          "expr": "sum by (openclaw_model) (increase(openclaw_tokens{job=~\"$openclaw_enable\"}[$__interval]))",
           "legendFormat": "openclaw: {{openclaw_model}}",
+          "interval": "1d",
           "refId": "C"
         }
       ]
