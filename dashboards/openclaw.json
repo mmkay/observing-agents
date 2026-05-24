@@ -1436,7 +1436,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(rate(openclaw_tokens{openclaw_token=\"completion\"}[1h])) / clamp_min(sum(rate(openclaw_model_call_duration_ms_sum[1h])), 0.0001) * 1000",
+          "expr": "sum(rate(openclaw_tokens{openclaw_token=\"output\"}[1h])) / clamp_min(sum(rate(openclaw_model_call_duration_ms_sum[1h])), 0.0001) * 1000",
           "legendFormat": "tok/sec (approx)",
           "refId": "A"
         }
