@@ -39,7 +39,7 @@ Set persistently in `~/.bashrc` and `~/.profile`:
 export OPENCODE_ENABLE_TELEMETRY=1
 export OPENCODE_OTLP_ENDPOINT=http://<your-otel-collector>:4318
 export OPENCODE_OTLP_PROTOCOL=http/protobuf
-export OPENCODE_OTLP_METRICS_INTERVAL=1000
+export OPENCODE_OTLP_METRICS_INTERVAL=15000
 export OPENCODE_OTLP_LOGS_INTERVAL=1000
 ```
 
@@ -48,10 +48,10 @@ export OPENCODE_OTLP_LOGS_INTERVAL=1000
 | `OPENCODE_ENABLE_TELEMETRY` | `1` | Enables the plugin |
 | `OPENCODE_OTLP_ENDPOINT` | `http://otelcol:4318` | Your OpenTelemetry Collector endpoint |
 | `OPENCODE_OTLP_PROTOCOL` | `http/protobuf` | Port 4318 is HTTP (not gRPC on 4317) |
-| `OPENCODE_OTLP_METRICS_INTERVAL` | `1000` | 1 s; must be short because `opencode run` sessions are brief |
-| `OPENCODE_OTLP_LOGS_INTERVAL` | `1000` | 1 s; same reason |
+| `OPENCODE_OTLP_METRICS_INTERVAL` | `15000` | 15 s; OTel SDK flushes on exit so session-end data is always captured |
+| `OPENCODE_OTLP_LOGS_INTERVAL` | `1000` | 1 s; logs are event-driven — keep prompt |
 
-> **Important**: The default metrics interval (60 s) is far too long for `opencode run` sessions, which typically last only a few seconds. Setting both intervals to 1000 ms ensures data is flushed before the process exits. Without this, metrics may never appear in your backend.
+> **Metric interval**: The default (60 s) is too long for short sessions, but 1 s generates unnecessary volume. 15 s is the right balance for OpenCode: short enough for sessions of a few minutes, and the OTel SDK calls `ForceFlush()` on exit so metrics are always sent at session end regardless of interval. Logs are kept at 1 s because they are event-driven and low-volume.
 
 Both `.bashrc` and `.profile` should contain these exports so they are available in interactive shells and login/non-interactive shells alike.
 

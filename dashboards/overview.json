@@ -316,20 +316,23 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_session_count[1h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
+          "expr": "sum(increase(claude_code_session_count[$__interval])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
           "legendFormat": "Claude Code",
+          "interval": "1h",
           "refId": "A"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(opencode_session_count{is_subagent=\"false\"}[1h])) without (session_id, project_id, is_subagent)",
+          "expr": "sum(increase(opencode_session_count{is_subagent=\"false\"}[$__interval])) without (session_id, project_id, is_subagent)",
           "legendFormat": "OpenCode",
+          "interval": "1h",
           "refId": "B"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[1h])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel, openclaw_agent)",
+          "expr": "sum(increase(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[$__interval])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel, openclaw_agent)",
           "legendFormat": "OpenClaw",
+          "interval": "1h",
           "refId": "C"
         }
       ]
@@ -364,14 +367,16 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_cost_usage[1d])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, effort, query_source, terminal_type, agent_name, skill_name)",
+          "expr": "sum(increase(claude_code_cost_usage[$__interval])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, model, effort, query_source, terminal_type, agent_name, skill_name)",
           "legendFormat": "Claude Code",
+          "interval": "1d",
           "refId": "A"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(opencode_cost_usage[1d])) without (session_id, project_id, model, agent)",
+          "expr": "sum(increase(opencode_cost_usage[$__interval])) without (session_id, project_id, model, agent)",
           "legendFormat": "OpenCode",
+          "interval": "1d",
           "refId": "B"
         }
       ]
@@ -466,20 +471,23 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_session_count[1h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
+          "expr": "sum(increase(claude_code_session_count[$__interval])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
           "legendFormat": "Claude Code",
+          "interval": "1h",
           "refId": "A"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(opencode_session_count{is_subagent=\"false\"}[1h])) without (session_id, project_id, is_subagent)",
+          "expr": "sum(increase(opencode_session_count{is_subagent=\"false\"}[$__interval])) without (session_id, project_id, is_subagent)",
           "legendFormat": "OpenCode",
+          "interval": "1h",
           "refId": "B"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[1h])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel, openclaw_agent)",
+          "expr": "sum(increase(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[$__interval])) without (openclaw_model, openclaw_provider, openclaw_outcome, openclaw_channel, openclaw_agent)",
           "legendFormat": "OpenClaw",
+          "interval": "1h",
           "refId": "C"
         }
       ]
@@ -636,8 +644,9 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(rate(openclaw_run_duration_ms_count{openclaw_outcome=\"error\",job=~\"$openclaw_enable\"}[1h])) / sum(rate(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[1h])) * 100",
+          "expr": "sum(rate(openclaw_run_duration_ms_count{openclaw_outcome=\"error\",job=~\"$openclaw_enable\"}[$__interval])) / sum(rate(openclaw_run_duration_ms_count{job=~\"$openclaw_enable\"}[$__interval])) * 100",
           "legendFormat": "OpenClaw error %",
+          "interval": "1h",
           "refId": "A"
         }
       ]
@@ -668,5 +677,5 @@
     }
 
   ],
-  "version": 2
+  "version": 5
 }

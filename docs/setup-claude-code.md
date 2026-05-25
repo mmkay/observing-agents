@@ -37,8 +37,11 @@ export OTEL_EXPORTER_OTLP_ENDPOINT=http://<your-otel-collector>:4318
 # Use cumulative temporality (required for Prometheus Remote Write backends)
 export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative
 
-# Short export intervals — ensures data is flushed before the process exits
-export OTEL_METRIC_EXPORT_INTERVAL=1000
+# Metric interval: 30s is more than sufficient for dashboard panels (1h/1d buckets).
+# The OTel SDK ForceFlush()es on exit, so the final data point is always sent
+# regardless of interval. 1s generated ~6M samples/week per metric; 30s yields ~200K.
+export OTEL_METRIC_EXPORT_INTERVAL=30000
+# Keep logs and traces at 1s — they are event-driven and low-volume.
 export OTEL_LOGS_EXPORT_INTERVAL=1000
 export OTEL_TRACES_EXPORT_INTERVAL=1000
 ```
@@ -53,13 +56,13 @@ export OTEL_TRACES_EXPORT_INTERVAL=1000
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` | Port 4318 is HTTP (not gRPC on 4317) |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://otelcol:4318` | Your OpenTelemetry Collector endpoint |
 | `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE` | `cumulative` | Required for Prometheus Remote Write backends (see below) |
-| `OTEL_METRIC_EXPORT_INTERVAL` | `1000` | 1 s; default is 60 s, far too long for brief sessions |
-| `OTEL_LOGS_EXPORT_INTERVAL` | `1000` | 1 s; default is 5 s, may miss data from very short sessions |
-| `OTEL_TRACES_EXPORT_INTERVAL` | `1000` | 1 s; default is 5 s, same reason |
+| `OTEL_METRIC_EXPORT_INTERVAL` | `30000` | 30 s; OTel SDK flushes on exit so final data is never lost regardless of interval |
+| `OTEL_LOGS_EXPORT_INTERVAL` | `1000` | 1 s; logs are event-driven and low-volume — keep prompt |
+| `OTEL_TRACES_EXPORT_INTERVAL` | `1000` | 1 s; same |
 
 > **Important — metric temporality**: Claude Code defaults to `delta` temporality. If your collector exports to Prometheus via Remote Write (as COS does), you **must** set `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative`. Without this, only the `target_info` resource metric appears in Prometheus — all actual metric data points are silently dropped during the delta-to-cumulative conversion.
 
-> **Important**: The default metrics export interval (60 s) is far too long for short-lived CLI sessions. Setting it to 1000 ms ensures data is flushed before the process exits. Without this, metrics may never appear in your backend. The logs and traces export intervals default to 5 s, which is less critical but worth shortening for very brief sessions.
+> **Metric interval**: The default (60 s) is too long for very short sessions, but 1 s generates ~6 M samples/week per metric — far more than any dashboard needs. 30 s is the right balance: fine enough for 1 h/1 d dashboard panels, and the OTel SDK always calls `ForceFlush()` on process exit so the final counters are sent regardless of the interval. Logs and traces are kept at 1 s because they are event-driven and contribute negligible volume.
 
 Both `.bashrc` and `.profile` should contain these exports so they are available in interactive shells and login/non-interactive shells alike.
 
