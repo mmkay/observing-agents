@@ -114,7 +114,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(increase(opencode_session_count{is_subagent=\"false\"}[24h])) without (session_id, project_id, is_subagent)",
+          "expr": "count(count_over_time(opencode_session_count{is_subagent=\"false\"}[24h]))",
           "legendFormat": "Sessions",
           "refId": "A"
         }
@@ -370,7 +370,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum by (is_subagent) (increase(opencode_session_count[1h]))",
+          "expr": "count by (is_subagent) (count_over_time(opencode_session_count[1h]))",
           "legendFormat": "is_subagent={{is_subagent}}",
           "refId": "A"
         }

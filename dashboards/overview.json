@@ -108,14 +108,14 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_session_count[24h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
+          "expr": "count(count_over_time(claude_code_session_count[24h]))",
           "legendFormat": "Claude Code",
           "refId": "A",
           "instant": true
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(opencode_session_count{is_subagent=\"false\"}[24h])) without (session_id, project_id, is_subagent)",
+          "expr": "count(count_over_time(opencode_session_count{is_subagent=\"false\"}[24h]))",
           "legendFormat": "OpenCode",
           "refId": "B",
           "instant": true
@@ -316,14 +316,14 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_session_count[$__interval])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
+          "expr": "count(count_over_time(claude_code_session_count[$__interval]))",
           "legendFormat": "Claude Code",
           "interval": "1h",
           "refId": "A"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(opencode_session_count{is_subagent=\"false\"}[$__interval])) without (session_id, project_id, is_subagent)",
+          "expr": "count(count_over_time(opencode_session_count{is_subagent=\"false\"}[$__interval]))",
           "legendFormat": "OpenCode",
           "interval": "1h",
           "refId": "B"
@@ -471,14 +471,14 @@
       "targets": [
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(claude_code_session_count[$__interval])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
+          "expr": "count(count_over_time(claude_code_session_count[$__interval]))",
           "legendFormat": "Claude Code",
           "interval": "1h",
           "refId": "A"
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "sum(increase(opencode_session_count{is_subagent=\"false\"}[$__interval])) without (session_id, project_id, is_subagent)",
+          "expr": "count(count_over_time(opencode_session_count{is_subagent=\"false\"}[$__interval]))",
           "legendFormat": "OpenCode",
           "interval": "1h",
           "refId": "B"

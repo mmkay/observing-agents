@@ -85,7 +85,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(increase(claude_code_session_count[24h])) without (session_id, start_type, terminal_type, user_email, user_id, user_account_id, user_account_uuid, organization_id)",
+          "expr": "count(count_over_time(claude_code_session_count[24h]))",
           "legendFormat": "Sessions",
           "refId": "A"
         }
@@ -415,7 +415,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(increase(claude_code_session_count[1h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
+          "expr": "count(count_over_time(claude_code_session_count[1h]))",
           "legendFormat": "Sessions/hr",
           "refId": "A"
         }
@@ -642,7 +642,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum by (start_type) (increase(claude_code_session_count[$__range]))",
+          "expr": "count by (start_type) (count_over_time(claude_code_session_count[$__range]))",
           "legendFormat": "{{start_type}}",
           "refId": "A"
         }
@@ -1077,7 +1077,7 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(increase(claude_code_session_count[1h])) without (session_id, user_email, user_id, user_account_id, user_account_uuid, organization_id, start_type, terminal_type)",
+          "expr": "count(count_over_time(claude_code_session_count[1h]))",
           "legendFormat": "Sessions",
           "refId": "A"
         }

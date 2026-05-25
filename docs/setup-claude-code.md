@@ -121,6 +121,29 @@ The three sampling rate config options on the COS OTel Collector charm are:
 
 For other backends, check if your collector or tracing backend has a similar sampling policy and adjust accordingly.
 
+### Dashboard panels loading slowly or not at all (7-day range)
+
+If most panels in a 7-day dashboard take 8–20 seconds to load or appear to time out in the browser, the most likely cause is **metric export interval set too low** (e.g. `1000` ms instead of `30000`). At 1 s/sample, a single metric accumulates ~6 M samples/week per series. Grafana sends range queries that force Prometheus to scan all of that data at every step — the overview dashboard's "Token share by model" pie chart, for example, took **8.9 s** from a remote client at 1 s density vs. under 1 s at 30 s density.
+
+Confirm the running session's interval:
+
+```bash
+# Should show avg_interval ~30s; if it shows 1.0s the interval was wrong at launch
+PROM="http://<prometheus>:9090"
+NOW=$(date +%s); START=$((NOW-60))
+curl -s "${PROM}/api/v1/query_range?query=claude_code_cost_usage&start=${START}&end=${NOW}&step=1" \
+  | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+for s in d['data']['result'][:1]:
+    vals=s['values']; times=[float(v[0]) for v in vals]
+    gaps=[times[i+1]-times[i] for i in range(len(times)-1)]
+    print(f'samples={len(vals)} avg_gap={sum(gaps)/len(gaps):.1f}s' if gaps else 'too few samples')
+"
+```
+
+If the interval is wrong for a running session, it cannot be changed in-place — the env var is inherited at process start. Fix: correct `OTEL_METRIC_EXPORT_INTERVAL` in `.bashrc`/`.profile`, then start a **new terminal** and launch a new `claude` session. The old high-density data remains in Prometheus until the retention window passes; narrowing the dashboard time range to 1–3 days gives immediate relief while it ages out.
+
 ### Environment variables not taking effect
 
 Claude Code reads these variables at startup. If you add them to `.bashrc` or `.profile`, you must start a **new shell** before launching `claude` for the changes to take effect. Existing sessions will not pick up the new configuration.
