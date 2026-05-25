@@ -1,0 +1,341 @@
+{
+  "uid": "ollama",
+  "title": "Ollama",
+  "schemaVersion": 39,
+  "tags": [
+    "ollama",
+    "llm",
+    "gen-ai"
+  ],
+  "editable": true,
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "refresh": "1m",
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "query": "prometheus",
+        "label": "Prometheus",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false
+      },
+      {
+        "name": "job",
+        "type": "query",
+        "label": "Job",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "query": {
+          "query": "label_values(gen_ai_client_token_usage_count{gen_ai_system=\"Ollama\"}, job)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": false,
+        "hide": 0,
+        "sort": 1
+      },
+      {
+        "name": "model",
+        "type": "query",
+        "label": "Model",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "query": {
+          "query": "label_values(gen_ai_client_token_usage_count{gen_ai_system=\"Ollama\", job=~\"$job\"}, gen_ai_response_model)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": false,
+        "hide": 0,
+        "sort": 1
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Token Usage",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }
+    },
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Total Tokens (this window)",
+      "description": "All input + output tokens consumed in the selected time range",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "x": 0, "y": 1, "w": 8, "h": 4 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(gen_ai_client_token_usage_sum{gen_ai_system=\"Ollama\", job=~\"$job\", gen_ai_response_model=~\"$model\"}[$__range]))",
+          "legendFormat": "Total Tokens",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Input Tokens (this window)",
+      "description": "Input tokens consumed in the selected time range",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "x": 8, "y": 1, "w": 8, "h": 4 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1000000 },
+              { "color": "red", "value": 10000000 }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(gen_ai_client_token_usage_sum{gen_ai_system=\"Ollama\", job=~\"$job\", gen_ai_token_type=\"input\", gen_ai_response_model=~\"$model\"}[$__range]))",
+          "legendFormat": "Input Tokens",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Output Tokens (this window)",
+      "description": "Output tokens generated in the selected time range",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "x": 16, "y": 1, "w": 8, "h": 4 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 500000 },
+              { "color": "red", "value": 5000000 }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(gen_ai_client_token_usage_sum{gen_ai_system=\"Ollama\", job=~\"$job\", gen_ai_token_type=\"output\", gen_ai_response_model=~\"$model\"}[$__range]))",
+          "legendFormat": "Output Tokens",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Token Usage Rate",
+      "description": "Input and output tokens per second over time",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "x": 0, "y": 5, "w": 24, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 20
+          },
+          "unit": "short"
+        }
+      },
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(rate(gen_ai_client_token_usage_sum{gen_ai_system=\"Ollama\", job=~\"$job\", gen_ai_token_type=\"input\", gen_ai_response_model=~\"$model\"}[$__rate_interval]))",
+          "legendFormat": "input",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(rate(gen_ai_client_token_usage_sum{gen_ai_system=\"Ollama\", job=~\"$job\", gen_ai_token_type=\"output\", gen_ai_response_model=~\"$model\"}[$__rate_interval]))",
+          "legendFormat": "output",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "row",
+      "title": "Request Rate & Latency",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 13, "w": 24, "h": 1 }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "LLM Request Rate",
+      "description": "Ollama requests per second (chat + generate operations combined)",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "x": 0, "y": 14, "w": 12, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2 },
+          "unit": "reqps"
+        }
+      },
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(rate(gen_ai_client_operation_duration_count{gen_ai_system=\"Ollama\", job=~\"$job\", gen_ai_response_model=~\"$model\"}[$__rate_interval]))",
+          "legendFormat": "requests/s",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Operation Latency P50 / P95 / P99",
+      "description": "End-to-end latency of ollama chat/generate calls as measured by the OpenLLMetry client instrumentation",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "x": 12, "y": 14, "w": 12, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2 },
+          "unit": "s"
+        }
+      },
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.5, sum by (le) (rate(gen_ai_client_operation_duration_bucket{gen_ai_system=\"Ollama\", job=~\"$job\", gen_ai_response_model=~\"$model\"}[$__rate_interval])))",
+          "legendFormat": "p50",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(gen_ai_client_operation_duration_bucket{gen_ai_system=\"Ollama\", job=~\"$job\", gen_ai_response_model=~\"$model\"}[$__rate_interval])))",
+          "legendFormat": "p95",
+          "refId": "B"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(gen_ai_client_operation_duration_bucket{gen_ai_system=\"Ollama\", job=~\"$job\", gen_ai_response_model=~\"$model\"}[$__rate_interval])))",
+          "legendFormat": "p99",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "row",
+      "title": "Model Breakdown",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 22, "w": 24, "h": 1 }
+    },
+    {
+      "id": 9,
+      "type": "barchart",
+      "title": "Token Usage by Model (this window)",
+      "description": "Tokens consumed in the selected time range, broken down by model and token type",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "x": 0, "y": 23, "w": 24, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "fillOpacity": 80,
+            "stacking": { "mode": "normal", "group": "A" }
+          },
+          "unit": "short",
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "options": {
+        "xTickLabelRotation": 0,
+        "groupWidth": 0.7,
+        "barWidth": 0.97,
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (gen_ai_response_model, gen_ai_token_type) (increase(gen_ai_client_token_usage_sum{gen_ai_system=\"Ollama\", job=~\"$job\"}[$__range]))",
+          "legendFormat": "{{gen_ai_response_model}} / {{gen_ai_token_type}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "text",
+      "title": "Infrastructure metrics (VRAM, model load state)",
+      "gridPos": { "x": 0, "y": 31, "w": 24, "h": 6 },
+      "options": {
+        "mode": "markdown",
+        "content": "## Infrastructure metrics are not shown here\n\nThis dashboard covers **application-level metrics** emitted by the OpenLLMetry client instrumentation (`traceloop-sdk`). It shows token counts, request rates, and latencies from the perspective of the calling application.\n\n**What is missing:**\n- GPU / VRAM utilisation\n- Which models are currently loaded in memory (`/api/ps`)\n- ollama process CPU and memory\n\nTo get these, you need a **transparent proxy exporter** such as [`NorskHelsenett/ollama-metrics`](https://github.com/NorskHelsenett/ollama-metrics), which sits between the client and ollama and exposes a Prometheus `/metrics` endpoint. See [`docs/setup-ollama.md`](../docs/setup-ollama.md) in this repo for all available options and trade-offs."
+      }
+    }
+  ]
+}
