@@ -30,9 +30,10 @@ observing-agents/
 │   ├── opencode.json            # OpenCode dashboard (uid: ao-opencode)
 │   └── claude-code.json         # Claude Code dashboard (uid: ao-claude-code)
 └── docs/
-    ├── setup-opencode.md        # How to set up OpenCode observability
-    ├── setup-claude-code.md     # How to set up Claude Code observability
-    └── setup-openclaw.md        # How to set up OpenClaw observability
+├── setup-opencode.md           # How to set up OpenCode observability
+├── setup-claude-code.md        # How to set up Claude Code observability
+├── setup-openclaw.md           # How to set up OpenClaw observability
+└── setup-github-copilot.md     # How to set up GitHub Copilot CLI observability
 ```
 
 ## Conventions
@@ -47,3 +48,4 @@ observing-agents/
 - **OpenCode**: Metrics and logs via OTel plugin; traces present (root span names currently blank — known plugin issue)
 - **Claude Code**: Native OTel integration; metrics, logs, and traces
 - **OpenClaw**: Full setup guide and Grafana dashboard; metrics and traces via OTel
+- **GitHub Copilot CLI**: Native OTel integration; metrics and traces (no logs signal); feature is very new and not yet in official web documentation
