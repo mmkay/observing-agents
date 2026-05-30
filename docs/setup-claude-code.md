@@ -76,6 +76,14 @@ export OTEL_LOG_TOOL_DETAILS=1      # Include tool parameters and commands
 export OTEL_LOG_TOOL_CONTENT=1      # Include tool input/output in trace spans
 ```
 
+### LangFuse compatibility
+
+LangFuse recognises `claude_code.llm_request` spans as LLM generations via `gen_ai.system` and `gen_ai.request.model`.
+
+One caveat: Claude Code uses non-standard attribute names for token counts — `input_tokens` and `output_tokens` — rather than the OTel standard `gen_ai.usage.input_tokens` / `gen_ai.usage.output_tokens`. LangFuse does not pick up these non-standard names and will display 0 for token usage.
+
+Without content capture enabled, LangFuse shows span structure and model name only — no prompts or responses. Enable content capture with `OTEL_LOG_USER_PROMPTS=1` / `OTEL_LOG_TOOL_CONTENT=1` (see Optional: content logging above).
+
 ### Optional: multi-team attributes
 
 ```bash

@@ -64,6 +64,16 @@ opencode session
       → your backend (metrics, logs, traces)
 ```
 
+## LangFuse compatibility
+
+OpenCode is the richest LangFuse subject of the three agents covered in this repo. The plugin uses the **OpenInference** convention (`openinference.span.kind`, `llm.model_name`, `llm.system`), which LangFuse natively understands:
+
+- `opencode.session` root spans carry `session.total_cost_usd` and `session.total_tokens` as metadata attributes. LangFuse's own cost and token roll-ups are computed by aggregating the child `opencode.llm` generation spans (which carry `llm.token_count.prompt` / `llm.token_count.completion`), not from these session-level attributes directly.
+- Tool calls are typed granularly (`opencode.tool.read`, `opencode.tool.grep`, `opencode.tool.bash`, `opencode.tool.write`, etc.) and appear as distinct span types in the session view.
+- LLM generation spans carry `llm.model_name` — LangFuse renders the model name without extra configuration.
+
+Without content capture, `input.value` / `output.value` span attributes are absent — LangFuse shows structure, cost, and model name but no conversation content. Enable content capture by setting `captureContent` in the plugin config (see OpenCode docs).
+
 ## Troubleshooting
 
 ### Traces not appearing
