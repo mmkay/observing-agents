@@ -60,8 +60,6 @@ export OTEL_TRACES_EXPORT_INTERVAL=1000
 | `OTEL_LOGS_EXPORT_INTERVAL` | `1000` | 1 s; logs are event-driven and low-volume — keep prompt |
 | `OTEL_TRACES_EXPORT_INTERVAL` | `1000` | 1 s; same |
 
-> **Important — metric temporality**: Claude Code defaults to `delta` temporality. If your collector exports to Prometheus via Remote Write (as COS does), you **must** set `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative`. Without this, only the `target_info` resource metric appears in Prometheus — all actual metric data points are silently dropped during the delta-to-cumulative conversion.
-
 > **Metric interval**: The default (60 s) is too long for very short sessions, but 1 s generates ~6 M samples/week per metric — far more than any dashboard needs. 30 s is the right balance: fine enough for 1 h/1 d dashboard panels, and the OTel SDK always calls `ForceFlush()` on process exit so the final counters are sent regardless of the interval. Logs and traces are kept at 1 s because they are event-driven and contribute negligible volume.
 
 Both `.bashrc` and `.profile` should contain these exports so they are available in interactive shells and login/non-interactive shells alike.
@@ -102,12 +100,6 @@ claude code session
 ```
 
 ## Troubleshooting
-
-### Metrics not appearing (but logs/traces are fine)
-
-If logs and traces arrive but metrics do not, the most likely cause is a **temporality mismatch**. Claude Code exports delta-temporality counters by default. When the OTel Collector forwards these via Prometheus Remote Write, the delta-to-cumulative conversion may silently drop data points.
-
-Fix: set `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative`.
 
 ### Traces not appearing
 

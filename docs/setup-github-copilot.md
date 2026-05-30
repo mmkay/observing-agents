@@ -55,8 +55,6 @@ export OTEL_TRACES_EXPORT_INTERVAL=1000
 | `OTEL_METRIC_EXPORT_INTERVAL` | `30000` | 30 s; OTel SDK flushes on exit so final data is never lost regardless of interval |
 | `OTEL_TRACES_EXPORT_INTERVAL` | `1000` | 1 s; traces are event-driven and low-volume — keep prompt |
 
-> **Important — metric temporality**: GitHub Copilot CLI defaults to `delta` temporality. If your collector exports to Prometheus via Remote Write (as COS does), you **must** set `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative`. Without this, only the `target_info` resource metric appears in Prometheus — all actual metric data points are silently dropped during the delta-to-cumulative conversion.
-
 > **Metric interval**: The default (60 s) may miss very short sessions, but 1 s generates ~6 M samples/week per metric — far more than any dashboard needs. 30 s is the right balance: fine enough for 1 h/1 d dashboard panels, and the OTel SDK always calls `ForceFlush()` on process exit so the final counters are sent regardless of the interval. Traces are kept at 1 s because they are event-driven and contribute negligible volume.
 
 Both `.bashrc` and `.profile` should contain these exports so they are available in interactive shells and login/non-interactive shells alike.
@@ -108,12 +106,6 @@ copilot session
 ```
 
 ## Troubleshooting
-
-### Metrics not appearing (but traces are fine)
-
-If traces arrive but metrics do not, the most likely cause is a **temporality mismatch**. GitHub Copilot CLI exports delta-temporality counters by default. When the OTel Collector forwards these via Prometheus Remote Write, the delta-to-cumulative conversion may silently drop data points.
-
-Fix: set `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative`.
 
 ### Traces not appearing
 
