@@ -59,6 +59,21 @@
         "includeAll": false,
         "multi": false,
         "refresh": 0
+      },
+      {
+        "name": "copilot_enable",
+        "label": "GitHub Copilot",
+        "type": "custom",
+        "query": "Include : github-copilot,Exclude : NOOP_NO_MATCH",
+        "current": { "value": "github-copilot", "text": "Include" },
+        "options": [
+          { "selected": true,  "text": "Include", "value": "github-copilot" },
+          { "selected": false, "text": "Exclude", "value": "NOOP_NO_MATCH" }
+        ],
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "refresh": 0
       }
     ]
   },
@@ -126,6 +141,13 @@
           "legendFormat": "OpenClaw",
           "refId": "C",
           "instant": true
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(github_copilot_agent_turn_count_count{job=~\"$copilot_enable\"}[24h]))",
+          "legendFormat": "GitHub Copilot",
+          "refId": "D",
+          "instant": true
         }
       ]
     },
@@ -182,6 +204,13 @@
           "expr": "sum(increase(openclaw_tokens{job=~\"$openclaw_enable\"}[24h])) without (openclaw_model, openclaw_provider, openclaw_agent, openclaw_channel, openclaw_token)",
           "legendFormat": "OpenClaw",
           "refId": "C",
+          "instant": true
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(gen_ai_client_token_usage_sum{job=~\"$copilot_enable\"}[24h]))",
+          "legendFormat": "GitHub Copilot",
+          "refId": "D",
           "instant": true
         }
       ]
@@ -334,6 +363,13 @@
           "legendFormat": "OpenClaw",
           "interval": "1h",
           "refId": "C"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "increase(github_copilot_agent_turn_count_count{job=~\"$copilot_enable\"}[$__interval])",
+          "legendFormat": "GitHub Copilot",
+          "interval": "1h",
+          "refId": "D"
         }
       ]
     },
@@ -430,6 +466,13 @@
           "legendFormat": "OpenClaw",
           "interval": "1h",
           "refId": "C"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(gen_ai_client_token_usage_sum{job=~\"$copilot_enable\"}[$__interval]))",
+          "legendFormat": "GitHub Copilot",
+          "interval": "1h",
+          "refId": "D"
         }
       ]
     },
@@ -489,6 +532,13 @@
           "legendFormat": "OpenClaw",
           "interval": "1h",
           "refId": "C"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "increase(github_copilot_agent_turn_count_count{job=~\"$copilot_enable\"}[$__interval])",
+          "legendFormat": "GitHub Copilot",
+          "interval": "1h",
+          "refId": "D"
         }
       ]
     },
@@ -544,6 +594,13 @@
           "legendFormat": "openclaw: {{openclaw_model}}",
           "refId": "C",
           "instant": true
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (gen_ai_request_model) (increase(gen_ai_client_token_usage_sum{job=~\"$copilot_enable\"}[$__range]))",
+          "legendFormat": "copilot: {{gen_ai_request_model}}",
+          "refId": "D",
+          "instant": true
         }
       ]
     },
@@ -595,6 +652,13 @@
           "legendFormat": "openclaw: {{openclaw_model}}",
           "interval": "1d",
           "refId": "C"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (gen_ai_request_model) (increase(gen_ai_client_token_usage_sum{job=~\"$copilot_enable\"}[$__interval]))",
+          "legendFormat": "copilot: {{gen_ai_request_model}}",
+          "interval": "1d",
+          "refId": "D"
         }
       ]
     },
@@ -671,11 +735,11 @@
       "description": "Quick links to individual tool dashboards",
       "gridPos": { "h": 4, "w": 12, "x": 12, "y": 47 },
       "options": {
-        "content": "## Per-tool dashboards\n\n- [Claude Code](d/ao-claude-code)\n- [OpenCode](d/ao-opencode)\n- [OpenClaw](d/ao-openclaw)",
+        "content": "## Per-tool dashboards\n\n- [Claude Code](d/ao-claude-code)\n- [OpenCode](d/ao-opencode)\n- [OpenClaw](d/ao-openclaw)\n- [GitHub Copilot](d/ao-github-copilot)",
         "mode": "markdown"
       }
     }
 
   ],
-  "version": 5
+  "version": 6
 }

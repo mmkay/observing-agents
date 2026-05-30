@@ -1,10 +1,12 @@
 # Observability Architecture
 
-This document describes the telemetry environment used to observe the three coding agents covered in this repository: Claude Code, OpenCode, and OpenClaw.
+This document describes the telemetry environment used to observe the four coding agents covered in this repository: Claude Code, OpenCode, OpenClaw, and GitHub Copilot.
 
 ## Overview
 
-All three agents emit OpenTelemetry signals (metrics, logs, traces) over OTLP HTTP to a central OpenTelemetry Collector. The collector fans signals out to the appropriate backends. Traces are sent to two independent backends — Tempo for general-purpose waterfall inspection, and LangFuse for LLM-centric session analysis.
+All four agents emit OpenTelemetry signals over OTLP HTTP to a central OpenTelemetry Collector. The collector fans signals out to the appropriate backends. Traces are sent to two independent backends — Tempo for general-purpose waterfall inspection, and LangFuse for LLM-centric session analysis.
+
+> **Note:** GitHub Copilot CLI does not emit an OTel logs signal — only metrics and traces. All other agents emit metrics, logs, and traces.
 
 ## Components
 
@@ -15,8 +17,11 @@ All three agents emit OpenTelemetry signals (metrics, logs, traces) over OTLP HT
 | Claude Code | Native OTel SDK (built-in, no plugin) | Metrics · Logs · Traces |
 | OpenCode | [`@devtheops/opencode-plugin-otel`](https://github.com/DEVtheOPS/opencode-plugin-otel) | Metrics · Logs · Traces |
 | OpenClaw | [`@openclaw/diagnostics-otel`](https://docs.openclaw.ai/gateway/opentelemetry) | Metrics · Logs · Traces |
+| GitHub Copilot CLI | Native OTel SDK (built-in, env-var config) | Metrics · Traces |
 
-All three agents are configured with the same OTLP HTTP endpoint — the OpenTelemetry Collector — so no agent needs to know which backends are in use.
+All four agents are configured with the same OTLP HTTP endpoint — the OpenTelemetry Collector — so no agent needs to know which backends are in use.
+
+GitHub Copilot CLI exports metrics using both its own `github.copilot.*` metric names and the OTel semantic convention `gen_ai.*` names. Because `gen_ai.*` metrics are also emitted by OpenClaw, all dashboard queries for GitHub Copilot filter on `job="github-copilot"` to avoid mixing sources.
 
 ### Canonical Observability Stack (COS)
 
@@ -48,6 +53,7 @@ flowchart LR
         CC["Claude Code\nnative OTel SDK"]
         OC["OpenCode\nopencode-plugin-otel"]
         OCL["OpenClaw\ndiagnostics-otel"]
+        GHC["GitHub Copilot CLI\nnative OTel SDK"]
     end
 
     otelcol["OpenTelemetry Collector\notelcol-k8s"]
@@ -68,6 +74,7 @@ flowchart LR
     CC -- "metrics · logs · traces\nOTLP HTTP" --> otelcol
     OC -- "metrics · logs · traces\nOTLP HTTP" --> otelcol
     OCL -- "metrics · logs · traces\nOTLP HTTP" --> otelcol
+    GHC -- "metrics · traces\nOTLP HTTP" --> otelcol
 
     otelcol -- metrics --> Prometheus
     otelcol -- logs --> Loki
@@ -79,8 +86,10 @@ flowchart LR
 
 | Signal | Source | Destination |
 |---|---|---|
-| Metrics | All three agents | Prometheus (via otelcol remote write) |
-| Logs | All three agents | Loki (via otelcol) |
-| Traces | All three agents | Tempo (primary) and LangFuse (secondary) |
+| Metrics | All four agents | Prometheus (via otelcol remote write) |
+| Logs | Claude Code, OpenCode, OpenClaw | Loki (via otelcol) |
+| Traces | All four agents | Tempo (primary) and LangFuse (secondary) |
+
+> GitHub Copilot CLI does not emit OTel logs — its log output goes to the terminal only.
 
 Grafana queries Prometheus, Loki, and Tempo as datasources. LangFuse has its own UI and is queried independently.

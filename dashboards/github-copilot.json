@@ -1,0 +1,670 @@
+{
+  "schemaVersion": 39,
+  "uid": "ao-github-copilot",
+  "title": "GitHub Copilot",
+  "tags": ["agents", "github-copilot"],
+  "time": { "from": "now-7d", "to": "now" },
+  "refresh": "1m",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "options": [],
+        "refresh": 1
+      },
+      {
+        "name": "DS_TEMPO",
+        "label": "Tempo",
+        "type": "datasource",
+        "query": "tempo",
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "options": [],
+        "refresh": 1
+      }
+    ]
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Today",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Agent Invocations (24h)",
+      "description": "Number of agent invocations (invoke_agent operations) in the last 24 hours. GitHub Copilot has no session_count metric; this is the closest equivalent.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "timeFrom": "now-24h",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "red", "value": 50 }
+            ]
+          },
+          "unit": "short",
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(github_copilot_agent_turn_count_count[24h]))",
+          "legendFormat": "Invocations",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Tokens (24h)",
+      "description": "Total tokens (input + output) consumed in the last 24 hours",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "timeFrom": "now-24h",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 100000 },
+              { "color": "red", "value": 1000000 }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(gen_ai_client_token_usage_sum{job=\"github-copilot\"}[24h]))",
+          "legendFormat": "Tokens",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Tool Calls (24h)",
+      "description": "Total tool calls made by the agent in the last 24 hours",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "timeFrom": "now-24h",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 100 },
+              { "color": "red", "value": 1000 }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(github_copilot_tool_call_count{job=\"github-copilot\"}[24h]))",
+          "legendFormat": "Tool calls",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "LLM Calls (24h)",
+      "description": "Number of chat completions (LLM API calls) in the last 24 hours",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "timeFrom": "now-24h",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "red", "value": 500 }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(gen_ai_client_operation_duration_count{job=\"github-copilot\",gen_ai_operation_name=\"chat\"}[24h]))",
+          "legendFormat": "LLM calls",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "type": "row",
+      "title": "RED — Rate, Errors, Duration",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 }
+    },
+
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Invocation Rate (per hour)",
+      "description": "Agent invocations per 1h window. Each invocation is one user prompt handled by the agent loop.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line",
+            "spanNulls": false
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "increase(github_copilot_agent_turn_count_count[$__interval])",
+          "legendFormat": "Invocations/hr",
+          "interval": "1h",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Operation Error Rate (%)",
+      "description": "Percentage of operations (all types) that ended with error_type=\"failure\". Source: gen_ai_client_operation_duration{job=\"github-copilot\"}.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "single", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "red", "value": 20 }
+            ]
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "drawStyle": "line",
+            "gradientMode": "none"
+          },
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(rate(gen_ai_client_operation_duration_count{job=\"github-copilot\",error_type=\"failure\"}[$__interval])) / sum(rate(gen_ai_client_operation_duration_count{job=\"github-copilot\"}[$__interval])) * 100",
+          "legendFormat": "Error %",
+          "interval": "1h",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "LLM Call Duration p50 / p95 (seconds)",
+      "description": "Latency of chat completions (gen_ai_operation_name=chat) from the OTel histogram. p50 and p95 over the selected range.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.5, sum by (le) (rate(gen_ai_client_operation_duration_bucket{job=\"github-copilot\",gen_ai_operation_name=\"chat\"}[$__interval])))",
+          "legendFormat": "p50",
+          "interval": "1h",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(gen_ai_client_operation_duration_bucket{job=\"github-copilot\",gen_ai_operation_name=\"chat\"}[$__interval])))",
+          "legendFormat": "p95",
+          "interval": "1h",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Tokens & Model",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 }
+    },
+
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Tokens per Hour (input vs output)",
+      "description": "Hourly token consumption split by type. Input tokens are much larger than output — high input-to-output ratio is normal for agentic tool-use loops.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 15 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 50,
+            "stacking": { "mode": "normal", "group": "A" },
+            "drawStyle": "bars",
+            "gradientMode": "none",
+            "barAlignment": 0
+          },
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (gen_ai_token_type) (increase(gen_ai_client_token_usage_sum{job=\"github-copilot\"}[$__interval]))",
+          "legendFormat": "{{gen_ai_token_type}}",
+          "interval": "1h",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 12,
+      "type": "piechart",
+      "title": "Token share by model",
+      "description": "Proportion of tokens consumed per model over the selected range",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 15 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "pieType": "pie",
+        "displayLabels": ["percent"],
+        "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] },
+        "tooltip": { "mode": "single" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (gen_ai_request_model) (increase(gen_ai_client_token_usage_sum{job=\"github-copilot\"}[$__range]))",
+          "legendFormat": "{{gen_ai_request_model}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 13,
+      "type": "row",
+      "title": "Tool Usage",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 24 }
+    },
+
+    {
+      "id": 14,
+      "type": "piechart",
+      "title": "Tool calls by tool name",
+      "description": "Distribution of tool calls across tool types over the selected range",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 9, "w": 8, "x": 0, "y": 25 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "pieType": "pie",
+        "displayLabels": ["percent"],
+        "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] },
+        "tooltip": { "mode": "single" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (gen_ai_tool_name) (increase(github_copilot_tool_call_count{job=\"github-copilot\"}[$__range]))",
+          "legendFormat": "{{gen_ai_tool_name}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 15,
+      "type": "bargauge",
+      "title": "Tool call duration p50 (seconds)",
+      "description": "Median execution time per tool type over the selected range",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 9, "w": 8, "x": 8, "y": 25 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "valueMode": "color",
+        "minVizWidth": 0,
+        "minVizHeight": 10
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-BlYlRd" },
+          "unit": "s",
+          "decimals": 2,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "red", "value": 30 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.5, sum by (gen_ai_tool_name, le) (rate(github_copilot_tool_call_duration_bucket{job=\"github-copilot\"}[$__range])))",
+          "legendFormat": "{{gen_ai_tool_name}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Turns per invocation p50 / p95",
+      "description": "How many LLM turns (back-and-forth cycles) each agent invocation takes. High p95 indicates complex multi-step tasks.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 9, "w": 8, "x": 16, "y": 25 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "short",
+          "decimals": 1,
+          "min": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.5, sum by (le) (rate(github_copilot_agent_turn_count_bucket[$__interval])))",
+          "legendFormat": "p50 turns",
+          "interval": "1h",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(github_copilot_agent_turn_count_bucket[$__interval])))",
+          "legendFormat": "p95 turns",
+          "interval": "1h",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 17,
+      "type": "row",
+      "title": "Telemetry Health",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 34 }
+    },
+
+    {
+      "id": 18,
+      "type": "stat",
+      "title": "Last Metric Received (hours ago)",
+      "description": "Hours since the most recent GitHub Copilot metric arrived. Green = active; yellow = stale (>1h); red = likely not running.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 35 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 2 }
+            ]
+          },
+          "unit": "h",
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "(time() - max(timestamp(github_copilot_tool_call_count{job=\"github-copilot\"}))) / 3600",
+          "legendFormat": "Hours since last metric",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 19,
+      "type": "stat",
+      "title": "MCP Server Connections (successful)",
+      "description": "Cumulative count of successful MCP server connections over the selected range. GitHub Copilot uses MCP for tool integrations.",
+      "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 35 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(github_copilot_mcp_server_connection_count{job=\"github-copilot\",outcome=\"success\"}[$__range]))",
+          "legendFormat": "MCP connections",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "text",
+      "title": "Signal coverage",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 35 },
+      "options": {
+        "content": "### GitHub Copilot signal coverage\n\n| Signal | Available | Source |\n|--------|-----------|--------|\n| Metrics | Yes | Prometheus (`job=\"github-copilot\"`) |\n| Traces | Yes | Tempo (`service.name=\"github-copilot\"`) |\n| Logs | **No** | GitHub Copilot CLI does not emit an OTel logs signal |\n| Cost | **No** | No cost metric — GitHub Copilot subscription is flat-rate |\n\n**Note on `gen_ai_client_*` metrics**: these metric names are shared with OpenClaw. All queries on this dashboard filter `job=\"github-copilot\"` to avoid mixing sources.\n\n**Sampling**: workload traces are sampled at 100% (`juju config otelcol tracing_sampling_rate_workload=100`).",
+        "mode": "markdown"
+      }
+    }
+
+  ],
+  "version": 1,
+  "weekStart": ""
+}
