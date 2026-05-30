@@ -150,6 +150,16 @@ OpenClaw gateway (docker-compose)
       → Loki (logs)
 ```
 
+## LangFuse compatibility
+
+OpenClaw uses its own `@openclaw/diagnostics-otel` plugin. The actual span names emitted are `openclaw.run`, `openclaw.model.call`, `openclaw.model.usage`, `openclaw.harness.run`, `openclaw.exec`, and `openclaw.context.assembled`. Despite the custom naming, the plugin does use `gen_ai.*` attributes:
+
+- `openclaw.model.call` spans carry `gen_ai.system`, `gen_ai.request.model`, and `gen_ai.operation.name` — LangFuse renders them as typed LLM generations (`GENERATION`).
+- `openclaw.model.usage` spans carry `gen_ai.usage.input_tokens` and `gen_ai.usage.output_tokens` (the standard OTel names) — LangFuse picks up token counts correctly, unlike Claude Code.
+- `exec` tool spans carry `gen_ai.tool.name` — LangFuse renders them as `TOOL` type.
+
+OpenClaw does not use the OpenInference convention (`openinference.span.kind`), so there is no session-level cost or agent roll-up view. The LLM and tool spans are typed, but the overall trace reads as a flat list without an agent-session wrapper.
+
 ## Troubleshooting
 
 ### Plugin loads but only 2 plugins appear in the gateway
