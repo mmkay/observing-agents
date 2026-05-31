@@ -15,6 +15,7 @@
   --bg: #0d0d0d;
   --fg: #f0f0f0;
   --accent: #f0f0f0;
+  --accent-slide: #c87941;
   --border: #444;
   --nav-height: 3.75rem;
   --font: 'IBM Plex Mono', monospace;
@@ -24,6 +25,7 @@
   --bg: #f5f5f0;
   --fg: #111;
   --accent: #111;
+  --accent-slide: #a05e2c;
   --border: #bbb;
 }
 
@@ -132,9 +134,16 @@ main {
   color: var(--fg);
 }
 
-.reveal h1 { font-size: 2rem; }
+.reveal h1 { font-size: 2.5rem; color: var(--accent-slide); }
 .reveal h2 { font-size: 1.6rem; }
 .reveal h3 { font-size: 1.3rem; }
+.reveal h4 {
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.2rem;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+}
 
 .reveal p, .reveal li {
   color: var(--fg);
@@ -160,6 +169,74 @@ main {
 
 .reveal code {
   padding: 0.1em 0.3em;
+}
+
+.reveal .slides section img {
+  max-height: 50vh;
+  max-width: 90%;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0.75rem auto;
+  border: 1px solid var(--border);
+}
+
+.reveal blockquote {
+  background: none;
+  border: none;
+  border-left: 3px solid var(--accent-slide);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.2rem 0 0.2rem 0.85rem;
+  font-style: italic;
+  width: auto;
+}
+
+.reveal strong {
+  color: var(--accent-slide);
+}
+
+/* ── Title slide ─────────────────────────────────────── */
+
+.reveal .slides section.slide-title {
+  text-align: center;
+}
+
+.reveal .slides section.slide-title h1 {
+  font-size: 4rem;
+  margin-bottom: 0.25rem;
+}
+
+.reveal .slides section.slide-title h2 {
+  font-size: 1.3rem;
+  font-weight: 400;
+  opacity: 0.75;
+  color: var(--fg);
+  margin-top: 0.25rem;
+}
+
+.reveal .slides section.slide-title h3 {
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.5;
+  color: var(--fg);
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+
+.reveal .slides section.slide-title img {
+  max-height: 36vh;
+  margin-top: 1.5rem;
+}
+
+/* ── Dense slide ─────────────────────────────────────── */
+
+.reveal .slides section.slide-dense {
+  font-size: 0.85em;
+}
+
+.reveal .slides section.slide-dense img {
+  max-height: 28vh;
 }
 
 .reveal .controls {

@@ -152,7 +152,7 @@
           hash: false,
           controls: true,
           progress: true,
-          center: false,
+          center: true,
           transition: 'none',
           backgroundTransition: 'none',
           width: '100%',
@@ -160,6 +160,13 @@
           margin: 0.08,
           minScale: 0.2,
           maxScale: 2.0,
+        });
+
+        Reveal.on('ready', () => {
+          const titleSlide = Reveal.getSlide(0);
+          if (titleSlide) titleSlide.classList.add('slide-title');
+          const denseSlide = Reveal.getSlide(4);
+          if (denseSlide) denseSlide.classList.add('slide-dense');
         });
       })
       .catch(err => {
