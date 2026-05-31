@@ -1,6 +1,0 @@
-# Final Thoughts
-
----
-
-<!-- TODO -->
-

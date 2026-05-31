@@ -1,6 +1,0 @@
-# What I Built
-
----
-
-<!-- TODO -->
-

@@ -1,6 +1,0 @@
-# Configuring the Telemetry
-
----
-
-<!-- TODO -->
-
