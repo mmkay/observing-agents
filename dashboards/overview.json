@@ -366,7 +366,7 @@
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "increase(github_copilot_agent_turn_count_count{job=~\"$copilot_enable\"}[$__interval])",
+          "expr": "sum(increase(github_copilot_agent_turn_count_count{job=~\"$copilot_enable\"}[$__interval])) without (gen_ai_operation_name)",
           "legendFormat": "GitHub Copilot",
           "interval": "1h",
           "refId": "D"
@@ -535,7 +535,7 @@
         },
         {
           "datasource": { "type": "datasource", "uid": "${DS_PROMETHEUS}" },
-          "expr": "increase(github_copilot_agent_turn_count_count{job=~\"$copilot_enable\"}[$__interval])",
+          "expr": "sum(increase(github_copilot_agent_turn_count_count{job=~\"$copilot_enable\"}[$__interval])) without (gen_ai_operation_name)",
           "legendFormat": "GitHub Copilot",
           "interval": "1h",
           "refId": "D"
