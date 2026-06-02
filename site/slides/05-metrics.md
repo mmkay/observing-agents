@@ -8,9 +8,9 @@
 # TYPE go_gc_heap_objects_objects gauge
 go_gc_heap_objects_objects 360733
 # TYPE grafana_alerting_request_duration_seconds histogram
-grafana_alerting_request_duration_seconds_bucket{backend="grafana",method="GET",route="api_prometheus_grafana_api_v1_rules",status_code="200",le="0.005"} 29
-grafana_alerting_request_duration_seconds_bucket{backend="grafana",method="GET",route="api_prometheus_grafana_api_v1_rules",status_code="200",le="10"} 38
-grafana_alerting_request_duration_seconds_bucket{backend="grafana",method="GET",route="api_prometheus_grafana_api_v1_rules",status_code="200",le="+Inf"} 38
+grafana_alerting_request_duration_seconds_bucket{method="GET",route="api_prometheus_grafana_api_rules",status_code="200",le="0.005"} 29
+grafana_alerting_request_duration_seconds_bucket{method="GET",route="api_prometheus_grafana_api_rules",status_code="200",le="10"} 38
+grafana_alerting_request_duration_seconds_bucket{method="GET",route="api_prometheus_grafana_api_rules",status_code="200",le="+Inf"} 38
 ```
 
 Out of metrics, you can create dashboards:

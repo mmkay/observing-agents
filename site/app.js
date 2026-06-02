@@ -100,7 +100,7 @@
   }
 
   async function renderMermaid(container) {
-    const blocks = container.querySelectorAll('pre code.language-mermaid');
+    const blocks = container.querySelectorAll('pre code.mermaid, pre code.language-mermaid');
     if (!blocks.length) return;
 
     const isDark = document.documentElement.dataset.theme !== 'light';
@@ -152,7 +152,7 @@
           hash: false,
           controls: true,
           progress: true,
-          center: true,
+          center: false,
           transition: 'none',
           backgroundTransition: 'none',
           width: '100%',
@@ -165,8 +165,11 @@
         Reveal.on('ready', () => {
           const titleSlide = Reveal.getSlide(0);
           if (titleSlide) titleSlide.classList.add('slide-title');
+          const disclaimerSlide = Reveal.getSlide(1);
+          if (disclaimerSlide) disclaimerSlide.classList.add('slide-disclaimers');
           const denseSlide = Reveal.getSlide(4);
           if (denseSlide) denseSlide.classList.add('slide-dense');
+          renderMermaid(document.getElementById('reveal-slides'));
         });
       })
       .catch(err => {
@@ -183,6 +186,8 @@
     window.scrollTo(0, 0);
     initTheme();
     initNav();
-    showSection('about');
+    const params = new URLSearchParams(window.location.search);
+    const isRevealEmbed = params.has('postMessageEvents') || params.get('controls') === 'false';
+    showSection(isRevealEmbed ? 'slides' : 'about');
   });
 }());

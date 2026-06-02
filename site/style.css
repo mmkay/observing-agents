@@ -123,6 +123,8 @@ main {
 
 .reveal .slides section {
   text-align: left;
+  box-sizing: border-box;
+  padding-top: 1.5rem;
 }
 
 .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
@@ -139,9 +141,11 @@ main {
 .reveal h3 { font-size: 1.3rem; }
 .reveal h4 {
   font-size: 1.1rem;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 0.2rem;
-  margin-top: 1rem;
+  border-left: 3px solid var(--accent-slide);
+  padding-left: 0.6rem;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-top: 1.4rem;
   margin-bottom: 0.4rem;
 }
 
@@ -165,10 +169,19 @@ main {
 .reveal pre {
   padding: 0.5rem 0.75rem;
   font-size: 0.8em;
+  overflow-x: auto;
+  max-width: 100%;
+  margin-bottom: 1rem;
 }
 
 .reveal code {
   padding: 0.1em 0.3em;
+}
+
+.reveal pre code {
+  border: none;
+  padding: 0;
+  background: none;
 }
 
 .reveal .slides section img {
@@ -200,6 +213,12 @@ main {
 
 .reveal .slides section.slide-title {
   text-align: center;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 0;
+  height: 100%;
 }
 
 .reveal .slides section.slide-title h1 {
@@ -237,6 +256,32 @@ main {
 
 .reveal .slides section.slide-dense img {
   max-height: 28vh;
+}
+
+/* ── Disclaimer slide ────────────────────────────────── */
+
+.reveal .slides section.slide-disclaimers p {
+  margin-bottom: 2.2rem;
+  line-height: 1.85;
+  padding-left: 1rem;
+  border-left: 2px solid var(--border);
+}
+
+/* ── Mermaid in slides ───────────────────────────────── */
+
+.reveal .mermaid-diagram {
+  margin: 0.75rem auto;
+  overflow: auto;
+  max-height: 62vh;
+  text-align: center;
+}
+
+.reveal .mermaid-diagram svg {
+  max-width: 100%;
+  max-height: 60vh;
+  width: auto;
+  height: auto;
+  display: inline-block;
 }
 
 .reveal .controls {
