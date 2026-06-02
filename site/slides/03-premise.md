@@ -9,4 +9,4 @@
 ## Can we observe the agents? Can we use the tools we have? Let's find out
 
 Note:
-Regardless of your opinion on the matter (mine is rather cynical), LLMs and agents are absolutely everywhere now and they are changing how we work. I've been wearing different hats in the last 8 years, but all of them were related to observability. The natural question in my mind was "is there a way to hook up observability to my agents?". This has led me on an adventure that I'll describe today.
+Regardless of your opinion on the matter (mine is rather cynical), LLMs and agents are absolutely everywhere now and they are changing how we work. I've been wearing different hats in the last 8 years, but all of them were related to observability. The natural question in my mind, seeing this whole change, was "is there a way to hook up observability to my agents?". I thought this is a good topic to learn in public - and this is what I'll describe the results of that learning today.

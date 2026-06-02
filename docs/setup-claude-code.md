@@ -34,9 +34,6 @@ export OTEL_TRACES_EXPORTER=otlp
 export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://<your-otel-collector>:4318
 
-# Use cumulative temporality (required for Prometheus Remote Write backends)
-export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative
-
 # Metric interval: 30s is more than sufficient for dashboard panels (1h/1d buckets).
 # The OTel SDK ForceFlush()es on exit, so the final data point is always sent
 # regardless of interval. 1s generated ~6M samples/week per metric; 30s yields ~200K.
