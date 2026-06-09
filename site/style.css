@@ -168,7 +168,7 @@ main {
 
 .reveal pre {
   padding: 0.5rem 0.75rem;
-  font-size: 0.8em;
+  font-size: 0.9em;
   overflow-x: auto;
   max-width: 100%;
   margin-bottom: 1rem;
@@ -192,6 +192,9 @@ main {
   display: block;
   margin: 0.75rem auto;
   border: 1px solid var(--border);
+  background: var(--bg);
+  padding: 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
 }
 
 .reveal blockquote {
@@ -227,17 +230,17 @@ main {
 }
 
 .reveal .slides section.slide-title h2 {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 400;
-  opacity: 0.75;
+  opacity: 0.85;
   color: var(--fg);
   margin-top: 0.25rem;
 }
 
 .reveal .slides section.slide-title h3 {
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 400;
-  opacity: 0.5;
+  opacity: 0.6;
   color: var(--fg);
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
@@ -265,6 +268,7 @@ main {
   line-height: 1.85;
   padding-left: 1rem;
   border-left: 2px solid var(--border);
+  max-width: 80ch;
 }
 
 /* ── Mermaid in slides ───────────────────────────────── */

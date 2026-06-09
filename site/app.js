@@ -169,6 +169,8 @@
           if (disclaimerSlide) disclaimerSlide.classList.add('slide-disclaimers');
           const denseSlide = Reveal.getSlide(4);
           if (denseSlide) denseSlide.classList.add('slide-dense');
+          const taskSlide = Reveal.getSlide(8);
+          if (taskSlide) taskSlide.classList.add('slide-dense');
           renderMermaid(document.getElementById('reveal-slides'));
         });
       })
