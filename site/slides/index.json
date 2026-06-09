@@ -11,5 +11,9 @@
   "09-dashboard.md",
   "10-opentelemetry.md",
   "11-opencode.md",
-  "12-setup.md"
+  "12-setup.md",
+  "13-data-metrics.md",
+  "14-data-metrics-red.md",
+  "15-data-metrics-roast.md",
+  "16-data-logs.md"
 ]

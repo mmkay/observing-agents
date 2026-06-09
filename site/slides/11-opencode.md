@@ -23,7 +23,7 @@ cd ~/.config/opencode && npm install @devtheops/opencode-plugin-otel
 export OPENCODE_ENABLE_TELEMETRY=1
 export OPENCODE_OTLP_ENDPOINT=http://<your-otel-collector>:4318
 export OPENCODE_OTLP_PROTOCOL=http/protobuf
-export OPENCODE_OTLP_METRICS_INTERVAL=15000
+export OPENCODE_OTLP_METRICS_INTERVAL=30000
 export OPENCODE_OTLP_LOGS_INTERVAL=1000
 ```
 
