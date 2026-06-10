@@ -17,5 +17,13 @@
   "15-data-metrics-red.md",
   "16-data-openclaw-burn.md",
   "17-data-metrics-roast.md",
-  "18-data-logs.md"
+  "18-data-logs.md",
+  "19-traces-full.md",
+  "20-traces-claude.md",
+  "21-traces-copilot.md",
+  "22-traces-opencode.md",
+  "23-traces-storage.md",
+  "24-langfuse.md",
+  "25-summary.md",
+  "26-qa.md"
 ]
