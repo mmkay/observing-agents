@@ -171,6 +171,7 @@ main {
   font-size: 0.9em;
   overflow-x: auto;
   max-width: 100%;
+  margin-top: 0.75rem;
   margin-bottom: 1rem;
 }
 
@@ -271,6 +272,45 @@ main {
   max-width: 80ch;
 }
 
+/* ── Image gallery (multi-image slides) ─────────────── */
+
+.reveal .slides section .image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0.5rem 0;
+}
+
+.reveal .slides section .image-gallery p {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.reveal .slides section .image-gallery p img {
+  max-height: 62vh;
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
+
+/* Slides with code blocks: keep images from overflowing */
+.reveal .slides section:has(pre) img {
+  max-height: 36vh;
+}
+
+/* Wide-image slides: stretch small images to fill the slide */
+.reveal .slides section.slide-wide img {
+  width: 90%;
+  max-width: 90%;
+}
+
 /* ── Mermaid in slides ───────────────────────────────── */
 
 .reveal .mermaid-diagram {
@@ -341,8 +381,7 @@ main {
 #docs-content {
   flex: 1;
   overflow-y: auto;
-  padding: 2rem;
-  max-width: calc(72ch + 4rem);
+  padding: 2rem 3rem;
   font-size: 0.9rem;
   line-height: 1.7;
 }

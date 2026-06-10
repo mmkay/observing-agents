@@ -152,7 +152,7 @@
           hash: false,
           controls: true,
           progress: true,
-          center: false,
+          center: true,
           transition: 'none',
           backgroundTransition: 'none',
           width: '100%',
@@ -171,6 +171,18 @@
           if (denseSlide) denseSlide.classList.add('slide-dense');
           const taskSlide = Reveal.getSlide(8);
           if (taskSlide) taskSlide.classList.add('slide-dense');
+
+          // Wrap consecutive image paragraphs in a flex gallery container
+          Reveal.getSlides().forEach(slide => {
+            const imgParas = [...slide.querySelectorAll('p')].filter(p => p.querySelector('img'));
+            if (imgParas.length >= 2) {
+              const gallery = document.createElement('div');
+              gallery.className = 'image-gallery';
+              imgParas[0].parentNode.insertBefore(gallery, imgParas[0]);
+              imgParas.forEach(p => gallery.appendChild(p));
+            }
+          });
+
           renderMermaid(document.getElementById('reveal-slides'));
         });
       })

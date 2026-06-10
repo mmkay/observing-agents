@@ -1,7 +1,6 @@
-# How about logs?
+<!-- .slide: class="slide-wide" -->
+# How about logs? Claude Code
 
 ![Claude Code logs](images/claude-logs.png)
-
-![OpenCode logs](images/opencode-logs.png)
 
 Note:
