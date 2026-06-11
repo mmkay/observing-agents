@@ -1,4 +1,4 @@
-# And a light roast
+# You can build reports from the data
 
 ![OpenClaw generated usage report](images/openclaw-usage-report.png)
 

@@ -1,4 +1,4 @@
-# There's also observability dedicated for LLMs - for example, LangFuse
+# Tempo is great but it's not LLM-aware: LangFuse speaks tokens, models, sessions natively
 
 ![An example trace in LangFuse](images/langfuse-trace-example.png)
 
