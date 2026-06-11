@@ -37,6 +37,7 @@
     };
 
     Object.entries(views).forEach(([key, el]) => { el.hidden = key !== name; });
+    document.body.classList.toggle('slides-active', name === 'slides');
 
     if (name === 'docs' && DOC_FILES.length && !document.querySelector('#docs-nav a')) {
       buildDocsNav();
@@ -147,6 +148,18 @@
           container.appendChild(section);
         });
 
+        // Apply structural classes BEFORE Reveal.initialize() so the scale
+        // calculation sees the correct CSS (dense/wide) from the start.
+        const addSlideClass = (idx, ...classes) => {
+          const el = container.children[idx];
+          if (el) classes.forEach(c => el.classList.add(c));
+        };
+        addSlideClass(0, 'slide-title');
+        addSlideClass(1, 'slide-disclaimers');
+        addSlideClass(2, 'slide-wide');   // openclaw-prompt.png is tiny — needs width: 90%
+        addSlideClass(4, 'slide-dense');
+        addSlideClass(8, 'slide-dense');
+
         Reveal.initialize({
           plugins: [RevealMarkdown, RevealNotes],
           hash: false,
@@ -163,15 +176,6 @@
         });
 
         Reveal.on('ready', () => {
-          const titleSlide = Reveal.getSlide(0);
-          if (titleSlide) titleSlide.classList.add('slide-title');
-          const disclaimerSlide = Reveal.getSlide(1);
-          if (disclaimerSlide) disclaimerSlide.classList.add('slide-disclaimers');
-          const denseSlide = Reveal.getSlide(4);
-          if (denseSlide) denseSlide.classList.add('slide-dense');
-          const taskSlide = Reveal.getSlide(8);
-          if (taskSlide) taskSlide.classList.add('slide-dense');
-
           // Wrap consecutive image paragraphs in a flex gallery container
           Reveal.getSlides().forEach(slide => {
             const imgParas = [...slide.querySelectorAll('p')].filter(p => p.querySelector('img'));

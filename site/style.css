@@ -112,11 +112,20 @@ main {
   height: 100%;
 }
 
+body.slides-active #site-nav {
+  display: none;
+}
+
+body.slides-active main {
+  margin-top: 0;
+  height: 100vh;
+}
+
 /* ── Reveal.js theme overrides ───────────────────────── */
 
 .reveal {
   font-family: var(--font) !important;
-  font-size: 1.5rem;
+  font-size: 2.0rem;
   background: var(--bg);
   color: var(--fg);
 }
@@ -124,7 +133,7 @@ main {
 .reveal .slides section {
   text-align: left;
   box-sizing: border-box;
-  padding-top: 1.5rem;
+  padding-top: 0.25rem;
 }
 
 .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
@@ -136,16 +145,16 @@ main {
   color: var(--fg);
 }
 
-.reveal h1 { font-size: 2.5rem; color: var(--accent-slide); }
-.reveal h2 { font-size: 1.6rem; }
-.reveal h3 { font-size: 1.3rem; }
+.reveal h1 { font-size: 3.5rem; color: var(--accent-slide); }
+.reveal h2 { font-size: 2.6rem; }
+.reveal h3 { font-size: 2.0rem; }
 .reveal h4 {
-  font-size: 1.1rem;
+  font-size: 1.65rem;
   border-left: 3px solid var(--accent-slide);
   padding-left: 0.6rem;
   border-bottom: none;
   padding-bottom: 0;
-  margin-top: 1.4rem;
+  margin-top: 1.2rem;
   margin-bottom: 0.4rem;
 }
 
@@ -168,7 +177,7 @@ main {
 
 .reveal pre {
   padding: 0.5rem 0.75rem;
-  font-size: 0.9em;
+  font-size: 1.35rem;
   overflow-x: auto;
   max-width: 100%;
   margin-top: 0.75rem;
@@ -186,7 +195,7 @@ main {
 }
 
 .reveal .slides section img {
-  max-height: 50vh;
+  max-height: 64vh;
   max-width: 90%;
   width: auto;
   height: auto;
@@ -217,29 +226,24 @@ main {
 
 .reveal .slides section.slide-title {
   text-align: center;
-  display: flex !important;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   padding-top: 0;
-  height: 100%;
 }
 
 .reveal .slides section.slide-title h1 {
-  font-size: 4rem;
-  margin-bottom: 0.25rem;
+  font-size: 5.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .reveal .slides section.slide-title h2 {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   font-weight: 400;
   opacity: 0.85;
   color: var(--fg);
-  margin-top: 0.25rem;
+  margin-top: 0.3rem;
 }
 
 .reveal .slides section.slide-title h3 {
-  font-size: 1rem;
+  font-size: 1.6rem;
   font-weight: 400;
   opacity: 0.6;
   color: var(--fg);
@@ -255,11 +259,17 @@ main {
 /* ── Dense slide ─────────────────────────────────────── */
 
 .reveal .slides section.slide-dense {
-  font-size: 0.85em;
+  font-size: 0.72em;
 }
 
+.reveal .slides section.slide-dense h1 { font-size: 2.8rem; }
+.reveal .slides section.slide-dense h2 { font-size: 2.1rem; }
+.reveal .slides section.slide-dense h3 { font-size: 1.75rem; }
+.reveal .slides section.slide-dense h4 { font-size: 1.4rem; }
+
 .reveal .slides section.slide-dense img {
-  max-height: 28vh;
+  max-height: 26vh;
+  width: auto;
 }
 
 /* ── Disclaimer slide ────────────────────────────────── */
@@ -294,7 +304,7 @@ main {
 }
 
 .reveal .slides section .image-gallery p img {
-  max-height: 62vh;
+  max-height: 70vh;
   width: 100%;
   height: auto;
   margin: 0;
@@ -302,7 +312,8 @@ main {
 
 /* Slides with code blocks: keep images from overflowing */
 .reveal .slides section:has(pre) img {
-  max-height: 36vh;
+  max-height: 38vh;
+  width: auto;
 }
 
 /* Wide-image slides: stretch small images to fill the slide */
@@ -316,13 +327,13 @@ main {
 .reveal .mermaid-diagram {
   margin: 0.75rem auto;
   overflow: auto;
-  max-height: 62vh;
+  max-height: 70vh;
   text-align: center;
 }
 
 .reveal .mermaid-diagram svg {
   max-width: 100%;
-  max-height: 60vh;
+  max-height: 68vh;
   width: auto;
   height: auto;
   display: inline-block;
