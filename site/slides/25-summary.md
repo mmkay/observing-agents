@@ -1,8 +1,14 @@
 # Summary
 
-## Yes, you can observe agents
+## Yes, but
 
-### All of the tools use OpenTelemetry
+### Traces are expensive
+
+### Logs are useless
+
+### You need to remember about the privacy concerns
+
+## All of the tools use OpenTelemetry
 
 ### Most of the tools use common telemetry patterns
 
