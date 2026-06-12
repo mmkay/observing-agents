@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Observing Agents — Devoxx Poland 2026</title>
+  <link rel="stylesheet" href="vendor/reveal/dist/reset.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav id="site-nav">
+  <a href="#about" data-section="about">About</a>
+  <a href="#slides" data-section="slides" aria-current="page">Slides</a>
+  <a href="#docs" data-section="docs">Docs</a>
+  <a href="https://github.com/mmkay/observing-agents/tree/main/dashboards" target="_blank" rel="noopener">Dashboards</a>
+  <a href="https://github.com/mmkay" target="_blank" rel="noopener">@mmkay</a>
+  <button id="theme-toggle" aria-label="Toggle dark/light mode">◐</button>
+</nav>
+
+<main>
+  <section id="about-view" hidden>
+    <article id="about-content">
+      <h1>Observing Agents</h1>
+      <p class="subtitle">Devoxx Poland 2026 &mdash; Mateusz Kulewicz</p>
+
+      <p>
+        How much do you actually know about what your coding agents are doing?
+        This talk instruments Claude Code, OpenClaw, GitHub Copilot, and
+        Ollama with OpenTelemetry, ships their telemetry to a
+        self-hosted observability stack, and shows what the data reveals
+        about cost, latency, and tool behaviour in real daily use.
+      </p>
+
+      <h2>What's here</h2>
+      <dl>
+        <dt><a href="#slides" data-section="slides">Slides</a></dt>
+        <dd>
+          The presentation deck. Navigate with arrow keys or the on-screen
+          controls. Press <kbd>S</kbd> for speaker notes,
+          <kbd>F</kbd> for fullscreen.
+        </dd>
+
+        <dt><a href="#docs" data-section="docs">Docs</a></dt>
+        <dd>
+          Step-by-step setup guides: how to enable OpenTelemetry export for
+          each tool and point it at the
+          Canonical Observability Stack (COS) or any OTLP-compatible backend.
+        </dd>
+
+        <dt><a href="https://github.com/mmkay/observing-agents/tree/main/dashboards" target="_blank" rel="noopener">Dashboards</a></dt>
+        <dd>
+          Grafana dashboard JSON files for each tool — overview, per-agent
+          detail, token usage, latency histograms. Deploy them by pointing
+          <code>cos-configuration-k8s</code> at this repository.
+        </dd>
+      </dl>
+
+      <h2>Stack</h2>
+      <ul>
+        <li>Agents: Claude Code, OpenClaw, GitHub Copilot, Ollama</li>
+        <li>Telemetry: OpenTelemetry (metrics, traces, logs)</li>
+        <li>Backend: Canonical Observability Stack on Juju / Kubernetes<br>
+            (Prometheus &middot; Loki &middot; Tempo &middot; Grafana)</li>
+      </ul>
+
+      <img src="images/sample-dashboard.png" alt="Agent Observability Overview dashboard" id="dashboard-preview">
+    </article>
+  </section>
+
+  <section id="slides-view">
+    <div class="reveal">
+      <div class="slides" id="reveal-slides"></div>
+    </div>
+  </section>
+
+  <section id="docs-view" hidden>
+    <nav id="docs-nav" aria-label="Documentation files"></nav>
+    <article id="docs-content"></article>
+  </section>
+</main>
+
+<script src="vendor/reveal/dist/reveal.js"></script>
+<script src="vendor/reveal/dist/plugin/markdown.js"></script>
+<script src="vendor/reveal/dist/plugin/notes.js"></script>
+<script src="vendor/marked.min.js"></script>
+<script src="vendor/mermaid.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
