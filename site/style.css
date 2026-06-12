@@ -121,6 +121,32 @@ body.slides-active main {
   height: 100vh;
 }
 
+#slides-back-btn {
+  display: none;
+  position: fixed;
+  top: 0.65rem;
+  right: 1rem;
+  z-index: 2000;
+  background: rgba(13, 13, 13, 0.55);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.15rem 0.55rem;
+  line-height: 1.6;
+  opacity: 0.45;
+  transition: opacity 0.15s;
+}
+
+body.slides-active #slides-back-btn {
+  display: block;
+}
+
+#slides-back-btn:hover {
+  opacity: 1;
+}
+
 /* ── Reveal.js theme overrides ───────────────────────── */
 
 .reveal {

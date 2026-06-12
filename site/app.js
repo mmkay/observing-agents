@@ -63,6 +63,15 @@
         showSection(el.dataset.section);
       });
     });
+
+    document.getElementById('slides-back-btn').addEventListener('click', () => showSection('about'));
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.body.classList.contains('slides-active')) {
+        showSection('about');
+        e.stopPropagation();
+      }
+    }, true);
   }
 
   // ── Docs ─────────────────────────────────────────────
