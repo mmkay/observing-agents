@@ -45,6 +45,11 @@ html, body {
   transition: background 0.15s, color 0.15s;
 }
 
+/* Reveal.js adds .reveal-viewport to body (background-color:#fff); outspecify it */
+body.reveal-viewport {
+  background: var(--bg);
+}
+
 /* ── Nav ─────────────────────────────────────────────── */
 
 #site-nav {
