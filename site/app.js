@@ -174,7 +174,7 @@
           hash: false,
           controls: true,
           progress: true,
-          center: true,
+          center: false,
           transition: 'none',
           backgroundTransition: 'none',
           width: '100%',

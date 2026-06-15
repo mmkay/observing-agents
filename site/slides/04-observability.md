@@ -6,13 +6,12 @@ an artist formerly known as _application monitoring_ - but it's nuanced
 
 ### Signals
 
-#### Metrics
-
-#### Logs
-
-#### Traces
-
-#### (Profiles)
+<div class="signals-grid">
+  <div class="signal-item"><h4>Metrics</h4></div>
+  <div class="signal-item"><h4>Logs</h4></div>
+  <div class="signal-item"><h4>Traces</h4></div>
+  <div class="signal-item"><h4>(Profiles)</h4></div>
+</div>
 
 ### OpenTelemetry
 

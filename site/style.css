@@ -164,7 +164,7 @@ body.slides-active #slides-back-btn {
 .reveal .slides section {
   text-align: left;
   box-sizing: border-box;
-  padding-top: 0.25rem;
+  padding-top: 1rem;
 }
 
 .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
@@ -176,9 +176,9 @@ body.slides-active #slides-back-btn {
   color: var(--fg);
 }
 
-.reveal h1 { font-size: 3.5rem; color: var(--accent-slide); }
-.reveal h2 { font-size: 2.6rem; }
-.reveal h3 { font-size: 2.0rem; }
+.reveal h1 { font-size: 3.5rem; color: var(--accent-slide); margin-bottom: 0.5rem; }
+.reveal h2 { font-size: 2.6rem; margin-top: 1.4rem; margin-bottom: 0.5rem; }
+.reveal h3 { font-size: 2.0rem; margin-top: 1.4rem; margin-bottom: 0.5rem; }
 .reveal h4 {
   font-size: 1.65rem;
   border-left: 3px solid var(--accent-slide);
@@ -191,6 +191,11 @@ body.slides-active #slides-back-btn {
 
 .reveal p, .reveal li {
   color: var(--fg);
+  line-height: 1.7;
+}
+
+.reveal ul li, .reveal ol li {
+  margin-bottom: 0.6rem;
 }
 
 .reveal a {
@@ -216,7 +221,8 @@ body.slides-active #slides-back-btn {
 }
 
 .reveal code {
-  padding: 0.1em 0.3em;
+  padding: 0.2em 0.35em;
+  vertical-align: middle;
 }
 
 .reveal pre code {
@@ -253,11 +259,28 @@ body.slides-active #slides-back-btn {
   color: var(--accent-slide);
 }
 
+/* ── Signals grid (Observability 101 slide) ──────────── */
+
+.reveal .signals-grid {
+  display: flex;
+  gap: 2.5rem;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.reveal .signal-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.reveal .signal-item h4 {
+  margin-top: 0;
+}
+
 /* ── Title slide ─────────────────────────────────────── */
 
 .reveal .slides section.slide-title {
   text-align: center;
-  padding-top: 0;
+  padding-top: 38vh;
 }
 
 .reveal .slides section.slide-title h1 {
@@ -301,6 +324,20 @@ body.slides-active #slides-back-btn {
 .reveal .slides section.slide-dense img {
   max-height: 26vh;
   width: auto;
+}
+
+.reveal .slides section.slide-dense h2 {
+  margin-top: 0.65rem;
+  margin-bottom: 0.2rem;
+}
+
+.reveal .slides section.slide-dense h3 {
+  margin-top: 0.65rem;
+  margin-bottom: 0.2rem;
+}
+
+.reveal .slides section.slide-dense li {
+  margin-bottom: 0.25rem;
 }
 
 /* ── Disclaimer slide ────────────────────────────────── */
@@ -354,6 +391,12 @@ body.slides-active #slides-back-btn {
 }
 
 /* ── Mermaid in slides ───────────────────────────────── */
+
+/* Mermaid sizes foreignObject from generic metrics; IBM Plex Mono is ~10px taller,
+   clipping the bottom of edge labels. Allow overflow so text isn't cut off. */
+.reveal .mermaid-diagram svg .edgeLabel foreignObject {
+  overflow: visible;
+}
 
 .reveal .mermaid-diagram {
   margin: 0.75rem auto;
