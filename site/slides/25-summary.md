@@ -1,6 +1,6 @@
 # Summary
 
-## Yes, but:
+## Yes, you can observe agents, but:
 
 ### Traces are expensive
 
