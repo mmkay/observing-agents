@@ -16,4 +16,4 @@
 
 ## They are much heavier than any traces you've seen earlier
 
-# Three env variables, an observability backend. Full setup at **mmkay.github.io/observing-agents**
+# Three env variables + an observability backend. Full setup at **mmkay.github.io/observing-agents**

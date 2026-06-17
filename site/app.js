@@ -142,9 +142,10 @@
   function initReveal() {
     revealInitialised = true;
 
+    let files;
     fetch(SLIDE_INDEX)
       .then(r => r.json())
-      .then(files => Promise.all(files.map(f => fetch('slides/' + f).then(r => r.text()))))
+      .then(f => { files = f; return Promise.all(files.map(name => fetch('slides/' + name).then(r => r.text()))); })
       .then(sections => {
         const container = document.getElementById('reveal-slides');
         sections.forEach(md => {
@@ -159,15 +160,19 @@
 
         // Apply structural classes BEFORE Reveal.initialize() so the scale
         // calculation sees the correct CSS (dense/wide) from the start.
-        const addSlideClass = (idx, ...classes) => {
-          const el = container.children[idx];
+        // Keyed by filename (not array position) so reordering slides/index.json
+        // can't silently move a class onto the wrong slide.
+        const addSlideClass = (filename, ...classes) => {
+          const idx = files.indexOf(filename);
+          const el = idx >= 0 ? container.children[idx] : null;
           if (el) classes.forEach(c => el.classList.add(c));
+          else console.warn('addSlideClass: slide not found:', filename);
         };
-        addSlideClass(0, 'slide-title');
-        addSlideClass(1, 'slide-disclaimers');
-        addSlideClass(2, 'slide-wide');   // openclaw-prompt.png is tiny — needs width: 90%
-        addSlideClass(4, 'slide-dense');
-        addSlideClass(8, 'slide-dense');
+        addSlideClass('00-title.md', 'slide-title');
+        addSlideClass('01-disclaimer.md', 'slide-disclaimers');
+        addSlideClass('02-openclaw.md', 'slide-wide');   // openclaw-prompt.png is tiny — needs width: 90%
+        addSlideClass('04-observability.md', 'slide-dense');
+        addSlideClass('08-task.md', 'slide-dense');  // too much content for default sizing
 
         Reveal.initialize({
           plugins: [RevealMarkdown, RevealNotes],
@@ -211,6 +216,9 @@
   document.addEventListener('DOMContentLoaded', () => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
+    if (!localStorage.getItem('reveal-speaker-layout')) {
+      localStorage.setItem('reveal-speaker-layout', 'wide');
+    }
     initTheme();
     initNav();
     const params = new URLSearchParams(window.location.search);

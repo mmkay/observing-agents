@@ -279,35 +279,7 @@ body.slides-active #slides-back-btn {
 /* ── Title slide ─────────────────────────────────────── */
 
 .reveal .slides section.slide-title {
-  text-align: center;
-  padding-top: 38vh;
-}
-
-.reveal .slides section.slide-title h1 {
-  font-size: 5.5rem;
-  margin-bottom: 0.3rem;
-}
-
-.reveal .slides section.slide-title h2 {
-  font-size: 2.5rem;
-  font-weight: 400;
-  opacity: 0.85;
-  color: var(--fg);
-  margin-top: 0.3rem;
-}
-
-.reveal .slides section.slide-title h3 {
-  font-size: 1.6rem;
-  font-weight: 400;
-  opacity: 0.6;
-  color: var(--fg);
-  margin-top: 0.2rem;
-  margin-bottom: 0.2rem;
-}
-
-.reveal .slides section.slide-title img {
-  max-height: 36vh;
-  margin-top: 1.5rem;
+  padding: 0;
 }
 
 /* ── Dense slide ─────────────────────────────────────── */

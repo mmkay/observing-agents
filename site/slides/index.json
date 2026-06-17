@@ -4,13 +4,12 @@
   "02-openclaw.md",
   "03-premise.md",
   "04-observability.md",
-  "05-metrics.md",
-  "06-logs.md",
   "07-traces.md",
   "08-task.md",
   "09-dashboard.md",
   "10-opentelemetry.md",
   "11-opencode.md",
+  "11a-custom-agent.md",
   "12-setup.md",
   "13-data-metrics.md",
   "14-data-metrics-copilot.md",
@@ -24,6 +23,7 @@
   "22-traces-opencode.md",
   "23-traces-storage.md",
   "24-langfuse.md",
+  "24a-traces-custom-agent.md",
   "25-summary.md",
   "26-qa.md"
 ]

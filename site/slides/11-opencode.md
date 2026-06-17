@@ -28,4 +28,4 @@ export OPENCODE_OTLP_LOGS_INTERVAL=1000
 ```
 
 Note:
-With OpenCode, it was a bit more tricky. I ended up using an external plugin - but the setup itself was fairly straightforward afterwards. It was similar for OpenClaw too.
+With OpenCode, it was a bit more tricky. I ended up using an external plugin - but the setup itself was fairly straightforward afterwards. It was similar for OpenClaw too. You also use a set of environment variables, they have an OpenCode prefix, everything just works.
