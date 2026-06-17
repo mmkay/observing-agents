@@ -488,8 +488,8 @@
     {
       "id": 11,
       "type": "timeseries",
-      "title": "Tokens by Agent",
-      "description": "Token usage broken down by OpenCode sub-agent over the selected time range",
+      "title": "Token Rate by Agent (per hour)",
+      "description": "Hourly token consumption broken down by OpenCode sub-agent",
       "datasource": {
         "type": "datasource",
         "uid": "${DS_PROMETHEUS}"
@@ -504,110 +504,14 @@
         "defaults": {
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 20,
+            "fillOpacity": 50,
             "stacking": {
               "mode": "normal",
               "group": "A"
-            }
-          },
-          "unit": "short"
-        }
-      },
-      "options": {
-        "tooltip": {
-          "mode": "multi"
-        },
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "sum by (agent) (increase(opencode_token_usage[$__range]))",
-          "legendFormat": "{{agent}}",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "id": 12,
-      "type": "timeseries",
-      "title": "Cost by Agent",
-      "description": "Cost in USD broken down by OpenCode sub-agent over the selected time range",
-      "datasource": {
-        "type": "datasource",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 15,
-        "w": 8,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "stacking": {
-              "mode": "normal",
-              "group": "A"
-            }
-          },
-          "unit": "currencyUSD",
-          "decimals": 4
-        }
-      },
-      "options": {
-        "tooltip": {
-          "mode": "multi"
-        },
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "sum by (agent) (increase(opencode_cost_usage[$__range]))",
-          "legendFormat": "{{agent}}",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "id": 13,
-      "type": "timeseries",
-      "title": "Message Count by Agent",
-      "description": "Message count broken down by OpenCode sub-agent over the selected time range",
-      "datasource": {
-        "type": "datasource",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 15,
-        "w": 8,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "stacking": {
-              "mode": "normal",
-              "group": "A"
-            }
+            },
+            "drawStyle": "bars",
+            "gradientMode": "none",
+            "barAlignment": 0
           },
           "unit": "short",
           "decimals": 0
@@ -628,8 +532,117 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum by (agent) (increase(opencode_message_count[$__range]))",
+          "expr": "sum by (agent) (increase(opencode_token_usage[$__interval]))",
           "legendFormat": "{{agent}}",
+          "interval": "1h",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Cost Rate by Agent (per hour)",
+      "description": "Hourly cost in USD broken down by OpenCode sub-agent",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 15,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 50,
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            },
+            "drawStyle": "bars",
+            "gradientMode": "none",
+            "barAlignment": 0
+          },
+          "unit": "currencyUSD",
+          "decimals": 4
+        }
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "sum by (agent) (increase(opencode_cost_usage[$__interval]))",
+          "legendFormat": "{{agent}}",
+          "interval": "1h",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Message Rate by Agent (per hour)",
+      "description": "Hourly message count broken down by OpenCode sub-agent",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 15,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 50,
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            },
+            "drawStyle": "bars",
+            "gradientMode": "none",
+            "barAlignment": 0
+          },
+          "unit": "short",
+          "decimals": 0
+        }
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "sum by (agent) (increase(opencode_message_count[$__interval]))",
+          "legendFormat": "{{agent}}",
+          "interval": "1h",
           "refId": "A"
         }
       ]
@@ -850,7 +863,7 @@
     {
       "id": 20,
       "type": "row",
-      "title": "Model Drift (7d)",
+      "title": "Model Drift",
       "collapsed": false,
       "gridPos": {
         "x": 0,
@@ -861,9 +874,9 @@
     },
     {
       "id": 21,
-      "type": "barchart",
-      "title": "Tokens by Model Per Day",
-      "description": "Daily token consumption broken down by model over the last 7 days",
+      "type": "timeseries",
+      "title": "Tokens per Hour by Model",
+      "description": "Hourly token consumption broken down by model, to spot model drift over time",
       "datasource": {
         "type": "datasource",
         "uid": "${DS_PROMETHEUS}"
@@ -876,22 +889,29 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
-            "fillOpacity": 80,
+            "lineWidth": 2,
+            "fillOpacity": 50,
             "stacking": {
               "mode": "normal",
               "group": "A"
-            }
+            },
+            "drawStyle": "bars",
+            "gradientMode": "none",
+            "barAlignment": 0
           },
-          "unit": "short"
-        }
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
       },
       "options": {
-        "xTickLabelRotation": 0,
-        "groupWidth": 0.7,
-        "barWidth": 0.97,
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         },
         "legend": {
           "displayMode": "list",
@@ -904,8 +924,9 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum by (model) (increase(opencode_token_usage[1d]))",
+          "expr": "sum by (model) (increase(opencode_token_usage[$__interval]))",
           "legendFormat": "{{model}}",
+          "interval": "1h",
           "refId": "A"
         }
       ]

@@ -950,7 +950,7 @@
     {
       "id": 21,
       "type": "row",
-      "title": "Model Drift (7d)",
+      "title": "Model Drift",
       "collapsed": false,
       "gridPos": {
         "h": 1,
@@ -961,8 +961,9 @@
     },
     {
       "id": 22,
-      "type": "barchart",
-      "title": "Tokens by Model per Day (7d)",
+      "type": "timeseries",
+      "title": "Tokens per Hour by Model",
+      "description": "Hourly token consumption broken down by model, to spot model drift over time",
       "datasource": {
         "type": "datasource",
         "uid": "${DS_PROMETHEUS}"
@@ -974,9 +975,6 @@
         "y": 40
       },
       "options": {
-        "barWidth": 0.8,
-        "groupWidth": 0.7,
-        "stacking": "normal",
         "tooltip": {
           "mode": "multi",
           "sort": "none"
@@ -984,10 +982,7 @@
         "legend": {
           "displayMode": "list",
           "placement": "bottom"
-        },
-        "xField": "Time",
-        "orientation": "auto",
-        "fillOpacity": 80
+        }
       },
       "fieldConfig": {
         "defaults": {
@@ -995,14 +990,18 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 80,
+            "lineWidth": 2,
+            "fillOpacity": 50,
             "stacking": {
               "mode": "normal",
               "group": "A"
-            }
+            },
+            "drawStyle": "bars",
+            "gradientMode": "none",
+            "barAlignment": 0
           },
-          "unit": "short"
+          "unit": "short",
+          "decimals": 0
         },
         "overrides": []
       },
@@ -1012,8 +1011,9 @@
             "type": "datasource",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum by (model) (increase(claude_code_token_usage[1d]))",
+          "expr": "sum by (model) (increase(claude_code_token_usage[$__interval]))",
           "legendFormat": "{{model}}",
+          "interval": "1h",
           "refId": "A"
         }
       ]
