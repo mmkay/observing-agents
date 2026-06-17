@@ -1,7 +1,5 @@
 # OpenClaw: it burns tokens
 
-![OpenClaw's tools usage](images/openclaw-tools.png)
-
 ![OpenClaw's token usage](images/openclaw-token-usage.png)
 
 Note:

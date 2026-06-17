@@ -15,7 +15,7 @@
   --bg: #0d0d0d;
   --fg: #f0f0f0;
   --accent: #f0f0f0;
-  --accent-slide: #c87941;
+  --accent-slide: #e68b4b;
   --border: #444;
   --nav-height: 3.75rem;
   --font: 'IBM Plex Mono', monospace;
@@ -232,8 +232,8 @@ body.slides-active #slides-back-btn {
 }
 
 .reveal .slides section img {
-  max-height: 64vh;
-  max-width: 90%;
+  max-height: 80vh;
+  max-width: 96%;
   width: auto;
   height: auto;
   display: block;
@@ -344,7 +344,7 @@ body.slides-active #slides-back-btn {
 }
 
 .reveal .slides section .image-gallery p img {
-  max-height: 70vh;
+  max-height: 80vh;
   width: 100%;
   height: auto;
   margin: 0;
@@ -352,7 +352,15 @@ body.slides-active #slides-back-btn {
 
 /* Slides with code blocks: keep images from overflowing */
 .reveal .slides section:has(pre) img {
-  max-height: 38vh;
+  max-height: 44vh;
+  width: auto;
+}
+
+/* Slides with a heading below the image (caption/follow-up line):
+   leave room so that text isn't pushed off the bottom of the slide */
+.reveal .slides section:has(img):has(h2) img,
+.reveal .slides section:has(img):has(h3) img {
+  max-height: 56vh;
   width: auto;
 }
 
