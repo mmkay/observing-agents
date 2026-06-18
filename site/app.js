@@ -187,6 +187,7 @@
           margin: 0.08,
           minScale: 0.2,
           maxScale: 2.0,
+          showNotes: 'separate-page',
         });
 
         Reveal.on('ready', () => {

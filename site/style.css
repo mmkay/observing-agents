@@ -152,6 +152,10 @@ body.slides-active #slides-back-btn {
   opacity: 1;
 }
 
+html.print-pdf #slides-back-btn {
+  display: none !important;
+}
+
 /* ── Reveal.js theme overrides ───────────────────────── */
 
 .reveal {
