@@ -1,6 +1,6 @@
 # observing-agents
 
-Companion repository for the ["Observing Agents"](https://devoxx.pl/talk?id=9126) talk at Devoxx Poland 2026. Setup guides, Grafana dashboards, and findings on applying observability to LLM-based agent tools.
+Companion repository for the "Observing Coding Agents" talk, presented at [Devoxx Poland 2026](https://devoxx.pl/talk?id=9126) and upcoming at [SREday Warsaw Q4 2026](https://sreday.com/2026-warsaw-q4/). Setup guides, Grafana dashboards, and findings on applying observability to LLM-based agent tools.
 
 **Website:** [mmkay.github.io/observing-agents](https://mmkay.github.io/observing-agents)
 

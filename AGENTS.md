@@ -4,14 +4,14 @@ This file describes the purpose, structure, and conventions of the `observing-ag
 
 ## Purpose
 
-This repository is the companion to the "Observing Agents" talk at Devoxx Poland 2026. It serves as a single home for:
+This repository is the companion to the "Observing Coding Agents" talk, presented at Devoxx Poland 2026 and upcoming at SREday Warsaw Q4 2026. It serves as a single home for:
 
 - Setup guides for observing LLM-based agent tools (OpenCode, Claude Code, and others)
 - Grafana dashboards compatible with the `cos-configuration-k8s` charm
 - A reference knowledge base hosted on GitHub Pages (`mmkay.github.io/observing-agents`)
 - The talk presentation (PDF) and supporting diagrams
 
-The primary audience is Devoxx attendees and anyone interested in applying observability to agentic LLM tools. The github.io site is the "home page"; the repo is the technical source.
+The primary audience is conference attendees (Devoxx, SREday, and others) and anyone interested in applying observability to agentic LLM tools. The github.io site is the "home page"; the repo is the technical source.
 
 ## Observability stack
 
