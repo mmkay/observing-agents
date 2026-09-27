@@ -1,0 +1,1073 @@
+{
+  "schemaVersion": 39,
+  "uid": "ao-hermes",
+  "title": "Hermes Agent",
+  "tags": [
+    "agents",
+    "hermes"
+  ],
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "refresh": "1m",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Gateway Status",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Gateway Up",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "hermes_gateway_up",
+          "legendFormat": "Gateway Up",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "description": "1 = gateway process reporting up, 0 = down."
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Gateway State",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "running"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "sum by (hermes_gateway_state) (hermes_gateway_state)",
+          "legendFormat": "{{hermes_gateway_state}}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "description": "Current supervised state reported by the gateway process."
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Active Agents",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "hermes_gateway_active_agents",
+          "legendFormat": "Active Agents",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "description": "Agents currently active on the gateway."
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Gateway Busy",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "hermes_gateway_busy",
+          "legendFormat": "Gateway Busy",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "description": "1 = gateway currently busy handling work, 0 = idle."
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Platforms Up",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "sum(hermes_platform_up)",
+          "legendFormat": "Platforms Up",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "description": "Count of connected platforms (e.g. telegram, api_server) currently up."
+    },
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Cron Jobs Overdue",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "sum(hermes_cron_jobs_overdue)",
+          "legendFormat": "Cron Jobs Overdue",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "description": "Number of scheduled cron jobs currently overdue."
+    },
+    {
+      "id": 8,
+      "type": "row",
+      "title": "Gateway Activity",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Active Agents over Time",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 6
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Active agents",
+          "refId": "A",
+          "expr": "hermes_gateway_active_agents"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Busy / Drainable State",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 6
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Busy",
+          "refId": "A",
+          "expr": "hermes_gateway_busy"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Drainable",
+          "refId": "B",
+          "expr": "hermes_gateway_drainable"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Background Work & Delegations",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 6
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Background work",
+          "refId": "A",
+          "expr": "hermes_gateway_background_work"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Background delegations",
+          "refId": "B",
+          "expr": "hermes_gateway_background_delegations"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "row",
+      "title": "Platform Connectivity",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      }
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Platform Up by Platform",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "{{hermes_platform}}",
+          "refId": "A",
+          "expr": "sum by (hermes_platform) (hermes_platform_up)"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "Platform Degraded Events",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "{{hermes_platform}} ({{hermes_error_code}})",
+          "refId": "A",
+          "expr": "sum by (hermes_platform, hermes_error_code) (hermes_platform_degraded)"
+        }
+      ],
+      "description": "1 = platform reporting a degraded connection state."
+    },
+    {
+      "id": 15,
+      "type": "row",
+      "title": "Cron Scheduler Health",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      }
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Heartbeat & Last-Success Age",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 24
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Heartbeat age",
+          "refId": "A",
+          "expr": "hermes_cron_scheduler_heartbeat_age_seconds"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Last success age",
+          "refId": "B",
+          "expr": "hermes_cron_scheduler_last_success_age_seconds"
+        }
+      ],
+      "description": "Should stay low and sawtooth-shaped; a steadily climbing age means the scheduler has stalled."
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "Cron Jobs Enabled / Running / Overdue",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 24
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Enabled",
+          "refId": "A",
+          "expr": "hermes_cron_jobs_enabled"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Running",
+          "refId": "B",
+          "expr": "hermes_cron_jobs_running"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Overdue",
+          "refId": "C",
+          "expr": "hermes_cron_jobs_overdue"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "timeseries",
+      "title": "Cron Catch-up Occurrences",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 24
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "drawStyle": "line"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "legendFormat": "Catch-up occurrences",
+          "refId": "A",
+          "expr": "hermes_cron_scheduler_catch_up_occurrences"
+        }
+      ],
+      "description": "Count of missed-schedule catch-ups detected by the cron scheduler."
+    },
+    {
+      "id": 19,
+      "type": "row",
+      "title": "Diagnostics",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      }
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Gateway Diagnostic Log Events by Level",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 33
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "drawStyle": "bars"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_LOKI}"
+          },
+          "legendFormat": "{{level}}",
+          "refId": "A",
+          "expr": "sum by (level) (count_over_time({job=\"$hermes_service\"}[$__interval]))"
+        }
+      ],
+      "description": "Structured warning/error diagnostic events from the gateway; message body is content-free."
+    },
+    {
+      "id": 21,
+      "type": "table",
+      "title": "Recent Gateway Health Traces (from Tempo)",
+      "datasource": {
+        "type": "datasource",
+        "uid": "${DS_TEMPO}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 33
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {},
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "${DS_TEMPO}"
+          },
+          "queryType": "traceql",
+          "query": "{resource.service.name=\"$hermes_service\"}",
+          "tableType": "traces",
+          "refId": "A"
+        }
+      ],
+      "description": "Hermes emits one span per diagnostic event; in practice only the periodic gateway.health_snapshot heartbeat is observed live, so this is a liveness/browse view of the traces pipeline rather than an operational trace overview (spans are ~microseconds, single-span traces, no meaningful duration signal to chart). Confirms traces are actually reaching Tempo, which is a separate path from metrics and subject to tail-sampling (see docs/setup-hermes.md)."
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "options": [],
+        "refresh": 1
+      },
+      {
+        "name": "DS_LOKI",
+        "label": "Loki",
+        "type": "datasource",
+        "query": "loki",
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "options": [],
+        "refresh": 1
+      },
+      {
+        "name": "DS_TEMPO",
+        "label": "Tempo",
+        "type": "datasource",
+        "query": "tempo",
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "options": [],
+        "refresh": 1
+      },
+      {
+        "name": "hermes_service",
+        "label": "Hermes service name",
+        "description": "OTel service.name / Loki job for this Hermes instance (monitoring.gateway_health_export.resource_attributes); defaults to \"hermes-gateway\" but change it here if that default was overridden — it drives both the Loki job filter and the Tempo trace query below.",
+        "type": "custom",
+        "query": "hermes-gateway",
+        "current": {
+          "selected": true,
+          "text": "hermes-gateway",
+          "value": "hermes-gateway"
+        },
+        "options": [
+          {
+            "selected": true,
+            "text": "hermes-gateway",
+            "value": "hermes-gateway"
+          }
+        ],
+        "hide": 0,
+        "includeAll": false,
+        "multi": false
+      }
+    ]
+  },
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "version": 1,
+  "weekStart": ""
+}

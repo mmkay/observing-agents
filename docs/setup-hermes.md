@@ -128,6 +128,14 @@ Hermes gateway
       → Loki (logs)
 ```
 
+## Dashboard
+
+[`dashboards/hermes.json`](../dashboards/hermes.json) (uid `ao-hermes`) covers the gateway health metrics: current state and active-agent/busy/drainable stats, platform connectivity per platform (`hermes_platform_up`/`hermes_platform_degraded`), cron scheduler health (heartbeat/last-success age, job counts, catch-up occurrences), and a diagnostics row combining the WARN/ERROR log events with a Tempo panel listing recent `hermes-gateway` traces.
+
+The trace panel is a liveness/browse view, not an operational overview: every observed span so far is the periodic `gateway.health_snapshot` heartbeat (tracer `hermes.monitoring`), a single span per trace lasting microseconds, so there's no meaningful duration or error-rate signal to chart from it the way Claude Code's dashboard charts session duration from `claude_code.interaction` spans. Its value is confirming the traces pipeline is actually delivering data — a separate path from metrics, and one subject to the [tail-sampling workload rate](#sampling-cos-tail-based-sampler).
+
+The dashboard doesn't assume any particular Hermes deployment mechanism — the `hermes_*` metric names and label sets come from the OTel SDK inside Hermes itself, so they're identical whether Hermes runs as the Docker image, a pip install, or a systemd service; none of the Prometheus queries filter on a job/instance label at all, relying only on the `hermes_*` name prefix. The Loki and Tempo panels do key off the OTel `service.name` (`hermes-gateway` by default), so that's exposed as the `Hermes service name` template variable rather than hardcoded — change it in one place if `monitoring.gateway_health_export.resource_attributes` was overridden to something else.
+
 ## Troubleshooting
 
 ### Every trace/metric/log export 404s
