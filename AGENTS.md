@@ -40,7 +40,7 @@ observing-agents/
 
 - **By concern, not by tool**: dashboards live in `dashboards/`, setup guides live in `docs/`. Each tool gets its own file in the relevant directory.
 - **Dashboards**: JSON files in `dashboards/` must be directly consumable by `cos-configuration-k8s`. Dashboard UIDs follow the pattern `ao-<tool>`. Each dashboard defines three datasource template variables (`DS_PROMETHEUS`, `DS_LOKI`, `DS_TEMPO`) and references them in all panel targets.
-- **Docs**: Written in Markdown. Flat reference pages with setup steps and signal inventories.
+- **Docs**: Written in Markdown. Flat reference pages with setup steps and signal inventories. Describe the current state of a tool only — no "last verified", "still works/valid/required", "re-checked" or other changelog-style notes about when or how a claim was checked. If a doc needs re-checking against a tool's current behavior, do that and update the doc's content directly; the check itself belongs in git history, not in the doc.
 - **Adding a new tool**: create `dashboards/<tool>.json` following the conventions above (copy an existing dashboard as a starting point), and add `docs/setup-<tool>.md`.
 
 ## Tools covered

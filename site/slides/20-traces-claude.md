@@ -6,7 +6,7 @@
 # Claude
 export OTEL_LOG_USER_PROMPTS=1      # Include user prompt text in events and traces
 export OTEL_LOG_TOOL_DETAILS=1      # Include tool parameters and commands
-export OTEL_LOG_TOOL_CONTENT=1      # Include tool input/output in trace spans
+export OTEL_LOG_TOOL_CONTENT=1      # Include tool output in trace spans
 ```
 
 Note:
@@ -14,4 +14,4 @@ Claude's traces contents are complex: their traces have several metrics that can
 
 While most of the industry has started to use a shared naming scheme for the token-related values, they start theirs with `gen_ai_`, this is not the case for Claude. It means that the tools that use these conventions will not detect Claude's LLM calls in the same manner as the others.
 
-You can make also make the telemetry much more verbose by asking it to log almost everything: prompts, tool call results, even raw API bodies. Thing is: it will not be here in the logs, but rather in traces. It also, however, comes with privacy concerns - especially if you don't own your observability stack.
+You can make also make the telemetry much more verbose by asking it to log almost everything: prompts, responses, tool call arguments and results, even raw API bodies. Prompts and tool details show up both in the logs and in the traces, tool output is only in the traces, and raw API bodies are only in the logs. It also, however, comes with privacy concerns - especially if you don't own your observability stack. And even without any of these flags, your account email is attached to every signal.

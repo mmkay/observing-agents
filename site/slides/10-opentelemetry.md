@@ -16,9 +16,10 @@ export OTEL_METRICS_EXPORTER=otlp
 export OTEL_LOGS_EXPORTER=otlp
 export OTEL_TRACES_EXPORTER=otlp
 
-# OTLP endpoint and protocol
+# OTLP endpoint, protocol, temporality (Prometheus needs cumulative)
 export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://<your-otel-collector>:4318
+export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative
 
 export OTEL_METRIC_EXPORT_INTERVAL=30000
 export OTEL_LOGS_EXPORT_INTERVAL=1000

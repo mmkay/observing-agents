@@ -11,7 +11,7 @@ These two categories require different instrumentation approaches, and no single
 
 ## Ollama's native telemetry
 
-Ollama has **no native Prometheus `/metrics` endpoint**. This is a long-standing upstream request ([issue #3144](https://github.com/ollama/ollama/issues/3144)) with a PR open but unmerged as of 2026-05. There is also no OpenTelemetry support in ollama itself ([issue #9254](https://github.com/ollama/ollama/issues/9254)).
+Ollama has **no native Prometheus `/metrics` endpoint**: `GET /metrics` returns 404, and the binary contains no OpenTelemetry or Prometheus exporter code. This is a long-standing upstream request ([issue #3144](https://github.com/ollama/ollama/issues/3144)) with several competing PRs open but unmerged (e.g. [#6537](https://github.com/ollama/ollama/pull/6537), [#16998](https://github.com/ollama/ollama/pull/16998), [#18508](https://github.com/ollama/ollama/pull/18508)). A separate request to add OpenTelemetry tracing support was explicitly declined by a maintainer pending a server refactor ([issue #9254](https://github.com/ollama/ollama/issues/9254), closed).
 
 The `/api/ps` endpoint returns which models are currently loaded, but that is the only built-in observability hook.
 

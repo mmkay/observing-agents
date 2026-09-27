@@ -9,8 +9,10 @@ Any observability backend that accepts OTLP data can be used — Grafana Cloud, 
 Claude Code exports the following OTel signals:
 
 - **Metrics** (e.g. `claude_code.session.count`, `claude_code.token.usage`, `claude_code.cost.usage`, `claude_code.lines_of_code.count`, `claude_code.active_time.total`)
-- **Logs/Events** (user prompts, API requests, API errors, tool results)
-- **Traces** (beta — interaction, LLM request, tool execution, and hook spans; e.g. `claude_code.interaction`, `claude_code.llm_request`, `claude_code.tool`)
+- **Logs/Events** (user prompts, assistant responses, API requests, API errors, tool decisions, tool results)
+- **Traces** (beta: `claude_code.interaction` with `claude_code.llm_request` and `claude_code.tool` children; each tool span has `claude_code.tool.blocked_on_user` and `claude_code.tool.execution` children)
+
+`claude_code.hook` spans are not part of this setup. They need a separate detailed beta tracing configuration (`ENABLE_BETA_TRACING_DETAILED` plus `BETA_TRACING_ENDPOINT`), see the [Claude Code monitoring docs](https://code.claude.com/docs/en/monitoring-usage).
 
 ## Configuration
 
@@ -34,6 +36,10 @@ export OTEL_TRACES_EXPORTER=otlp
 export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://<your-otel-collector>:4318
 
+# Use cumulative temporality (Claude Code defaults to delta;
+# required for Prometheus Remote Write backends)
+export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=cumulative
+
 # Metric interval: 30s is more than sufficient for dashboard panels (1h/1d buckets).
 # The OTel SDK ForceFlush()es on exit, so the final data point is always sent
 # regardless of interval. 1s generated ~6M samples/week per metric; 30s yields ~200K.
@@ -46,13 +52,13 @@ export OTEL_TRACES_EXPORT_INTERVAL=1000
 | Variable | Example value | Notes |
 |---|---|---|
 | `CLAUDE_CODE_ENABLE_TELEMETRY` | `1` | Master switch for all telemetry |
-| `CLAUDE_CODE_ENHANCED_TELEMETRY_BETA` | `1` | Enables distributed traces (beta) |
+| `CLAUDE_CODE_ENHANCED_TELEMETRY_BETA` | `1` | Enables distributed traces (beta). Without it, only metrics and logs are sent |
 | `OTEL_METRICS_EXPORTER` | `otlp` | Export metrics via OTLP |
 | `OTEL_LOGS_EXPORTER` | `otlp` | Export logs/events via OTLP |
 | `OTEL_TRACES_EXPORTER` | `otlp` | Export traces via OTLP |
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` | Port 4318 is HTTP (not gRPC on 4317) |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://otelcol:4318` | Your OpenTelemetry Collector endpoint |
-| `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE` | `cumulative` | Required for Prometheus Remote Write backends (see below) |
+| `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE` | `cumulative` | Required for Prometheus Remote Write backends. Claude Code's default is `delta` |
 | `OTEL_METRIC_EXPORT_INTERVAL` | `30000` | 30 s; OTel SDK flushes on exit so final data is never lost regardless of interval |
 | `OTEL_LOGS_EXPORT_INTERVAL` | `1000` | 1 s; logs are event-driven and low-volume — keep prompt |
 | `OTEL_TRACES_EXPORT_INTERVAL` | `1000` | 1 s; same |
@@ -63,13 +69,28 @@ Both `.bashrc` and `.profile` should contain these exports so they are available
 
 ### Optional: content logging
 
-By default, Claude Code redacts prompt text, tool input, and tool output in telemetry. To include this data:
+By default, Claude Code redacts prompt text, assistant responses, tool input, and tool output in telemetry (they are exported as `<REDACTED>` or omitted). To include this data:
 
 ```bash
-export OTEL_LOG_USER_PROMPTS=1      # Include user prompt text in events and traces
-export OTEL_LOG_TOOL_DETAILS=1      # Include tool parameters and commands
-export OTEL_LOG_TOOL_CONTENT=1      # Include tool input/output in trace spans
+export OTEL_LOG_USER_PROMPTS=1         # Include user prompt text in events and traces
+export OTEL_LOG_ASSISTANT_RESPONSES=1  # Include assistant response text in assistant_response events
+export OTEL_LOG_TOOL_DETAILS=1         # Include tool parameters and commands (events and trace spans)
+export OTEL_LOG_TOOL_CONTENT=1         # Include tool output as a tool.output span event (traces only)
 ```
+
+| Variable | What it adds |
+|---|---|
+| `OTEL_LOG_USER_PROMPTS` | Prompt text in `user_prompt` events and on `claude_code.interaction` spans |
+| `OTEL_LOG_ASSISTANT_RESPONSES` | Response text in `assistant_response` events. When unset it falls back to the value of `OTEL_LOG_USER_PROMPTS`, so turning on prompts also turns on responses. Set it to `0` to log prompts but keep responses redacted |
+| `OTEL_LOG_TOOL_DETAILS` | Tool parameters, Bash commands, and tool input arguments in `tool_decision` / `tool_result` events and on `claude_code.tool` spans |
+| `OTEL_LOG_TOOL_CONTENT` | Tool output as a `tool.output` span event on `claude_code.tool` spans. Needs tracing enabled |
+| `OTEL_LOG_RAW_API_BODIES` | Full API request and response JSON as `api_request_body` / `api_response_body` **log events**, including the whole conversation history. Implies consent to everything the three variables above reveal |
+
+`OTEL_LOG_ASSISTANT_RESPONSES` needs Claude Code 2.1.193 or later. Thanks to the fallback, setting only `OTEL_LOG_USER_PROMPTS=1` also logs assistant responses.
+
+### Identity attributes are exported by default
+
+Regardless of the content settings above, metrics, events, and spans carry identity attributes: `user.id`, `user.email`, `organization.id`, `user.account_uuid`, and `user.account_id`. `user.email` cannot be turned off. `OTEL_METRICS_INCLUDE_ACCOUNT_UUID=false` drops the account UUID and ID, and `OTEL_METRICS_INCLUDE_SESSION_ID=false` drops `session.id` to reduce metric cardinality. Keep this in mind if you do not own your observability stack.
 
 ### LangFuse compatibility
 
