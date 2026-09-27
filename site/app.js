@@ -6,6 +6,7 @@
     'setup-ollama.md',
     'setup-claude-code.md',
     'setup-github-copilot.md',
+    'setup-hermes.md',
     'observability-architecture.md',
     'telemetry-gaps.md',
     'setup-opencode.md',
