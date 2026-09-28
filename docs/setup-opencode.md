@@ -8,9 +8,9 @@ Any observability backend that accepts OTLP data can be used — Grafana Cloud, 
 
 The plugin exports the following OTel signals:
 
-- **Metrics** (e.g. `opencode.session.count`, `opencode.token.usage`, `opencode.cost.usage`, `opencode.tool.duration`)
+- **Metrics** (e.g. `opencode.session.count`, `opencode.token.usage`, `opencode.cost.usage`, `opencode.tool.duration`, `opencode.subtask.count`)
 - **Logs** (session events, API requests, tool results, commits)
-- **Traces** (session, LLM, and tool spans — e.g. `opencode.session`, `opencode.llm`, `opencode.tool.bash`)
+- **Traces** (session, LLM, and tool spans — e.g. `opencode.session`, `opencode.llm`, `opencode.tool.bash` — root spans carry real names)
 
 ## Configuration files
 
@@ -21,11 +21,24 @@ The plugin exports the following OTel signals:
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@devtheops/opencode-plugin-otel@1.5.1"]
+  "plugins": ["@devtheops/opencode-plugin-otel@2.0.0"]
 }
 ```
 
-> **Pin the version.** The npm `latest` tag for this plugin points to `2.0.0`, which targets **OpenCode V2** (`opencode-ai@2.x`, currently only on the `2/edge` snap channel) and uses the `plugins` config key instead of `plugin`. The snap `latest/stable` channel (and the npm `opencode-ai` `latest` tag) are on the 1.18.x (V1) line, which needs the `1.x` plugin release — an unpinned `"plugin": ["@devtheops/opencode-plugin-otel"]"` entry pulls in the incompatible `2.0.0` build the next time opencode's plugin cache is invalidated. Pin to the latest `1.x` release (`1.5.1`) until the CLI itself moves to V2.
+> **Pin the version, and match the config key to your OpenCode line.** OpenCode V2 (`opencode-ai@2.x`, the `2/stable` snap channel) needs plugin `2.x` under the `plugins` key, as above. OpenCode V1 needs the `1.x` release line under the singular `plugin` key instead (`"plugin": ["@devtheops/opencode-plugin-otel@1.5.1"]`) — the two config keys and plugin major versions are not interchangeable, and loading the wrong one fails silently or errors depending on the mismatch. The npm `latest` dist-tag currently points to `2.0.0`; an unpinned `"plugins": ["@devtheops/opencode-plugin-otel"]` entry is fine on OpenCode V2 today but will break if a future major release changes behavior again, so pin explicitly regardless of which line you're on.
+>
+> Settings can also be passed inline instead of (or as well as) environment variables, using the plugin's object form — inline options take precedence over the matching `OPENCODE_*` variable:
+>
+> ```json
+> {
+>   "plugins": [
+>     {
+>       "package": "@devtheops/opencode-plugin-otel@2.0.0",
+>       "options": { "enabled": true, "metricPrefix": "opencode." }
+>     }
+>   ]
+> }
+> ```
 
 opencode resolves and caches the plugin package itself the first time it loads the config — no separate `npm install` step is needed or supported for the plugin entry above.
 
@@ -45,15 +58,15 @@ export OPENCODE_OTLP_LOGS_INTERVAL=1000
 |---|---|---|
 | `OPENCODE_ENABLE_TELEMETRY` | `1` | Enables the plugin |
 | `OPENCODE_OTLP_ENDPOINT` | `http://otelcol:4318` | Your OpenTelemetry Collector endpoint |
-| `OPENCODE_OTLP_PROTOCOL` | `http/protobuf` | Port 4318 is HTTP (not gRPC on 4317). Any other value selects gRPC, and the plugin's own default is gRPC on `localhost:4317` |
+| `OPENCODE_OTLP_PROTOCOL` | `http/protobuf` | One of `grpc`, `http/protobuf`, `http/json`. Port 4318 is HTTP; the plugin's own default is `grpc` on `localhost:4317` |
 | `OPENCODE_OTLP_METRICS_INTERVAL` | `15000` | 15 s; the plugin default is 60 s |
 | `OPENCODE_OTLP_LOGS_INTERVAL` | `1000` | 1 s; logs are event-driven, keep prompt. The plugin default is 5 s |
 
 > **Metric interval**: The default (60 s) is too long for short sessions, but 1 s generates unnecessary volume. 15 s is a reasonable balance for OpenCode. Do not rely on a flush at exit to make up for a long interval: a headless `opencode run` process exits as soon as its task completes, without flushing any pending metric or trace batch. Any metrics or spans queued for the next export tick — including the root `opencode.session` span and session-end metrics such as `opencode.session.duration` — are lost if the process exits before that tick fires (logs are less affected, thanks to their 1 s interval). Interactive sessions, which stay open past task completion, do not have this problem. If you script short `opencode run` invocations, lower `OPENCODE_OTLP_METRICS_INTERVAL` accordingly.
 
-> **Wire format**: With `OPENCODE_OTLP_PROTOCOL=http/protobuf` the plugin sends OTLP over HTTP with a JSON body (`Content-Type: application/json`). Collectors accept this on port 4318, so nothing needs to change, but do not expect protobuf on the wire.
+> **Wire format**: `OPENCODE_OTLP_PROTOCOL=http/protobuf` sends real binary protobuf over HTTP (`Content-Type: application/x-protobuf`) on port 4318. Use `http/json` instead if you specifically need a JSON body over HTTP.
 
-The plugin also supports optional variables not needed for the setup above: `OPENCODE_DISABLE_LOGS`, `OPENCODE_CAPTURE_PROMPT_IN_LOGS`, `OPENCODE_SPAN_ATTRIBUTES`, `OPENCODE_TRACEPARENT`, `OPENCODE_TRACESTATE`, and `OPENCODE_TRACE_PROPAGATION_PROVIDERS`. Every setting can also be passed inline through the plugin tuple form in `opencode.json`, see the [plugin README](https://github.com/DEVtheOPS/opencode-plugin-otel#readme).
+The plugin also supports optional variables not needed for the setup above: `OPENCODE_DISABLE_LOGS`, `OPENCODE_DISABLE_TRACES`, `OPENCODE_DISABLE_METRICS`, `OPENCODE_CAPTURE_PROMPT_IN_LOGS`, `OPENCODE_CAPTURE_MODEL_CONTEXT`, `OPENCODE_METRIC_PREFIX`, `OPENCODE_OTLP_HEADERS`, `OPENCODE_OTLP_HEADERS_HELPER`, `OPENCODE_RESOURCE_ATTRIBUTES`, `OPENCODE_SPAN_ATTRIBUTES`, `OPENCODE_OTLP_METRICS_TEMPORALITY`, `OPENCODE_TRACEPARENT`, `OPENCODE_TRACESTATE`, and `OPENCODE_TRACE_PROPAGATION_PROVIDERS`. Every setting can also be passed inline through the plugin's object form in `opencode.json`, see the [plugin README](https://github.com/DEVtheOPS/opencode-plugin-otel#readme).
 
 Both `.bashrc` and `.profile` should contain these exports so they are available in interactive shells and login/non-interactive shells alike.
 
