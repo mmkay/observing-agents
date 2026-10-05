@@ -33,7 +33,8 @@ observing-agents/
 ├── setup-opencode.md           # How to set up OpenCode observability
 ├── setup-claude-code.md        # How to set up Claude Code observability
 ├── setup-openclaw.md           # How to set up OpenClaw observability
-└── setup-github-copilot.md     # How to set up GitHub Copilot CLI observability
+├── setup-github-copilot.md     # How to set up GitHub Copilot CLI observability
+└── setup-hermes.md             # How to set up Hermes Agent observability
 ```
 
 ## Conventions
@@ -49,3 +50,4 @@ observing-agents/
 - **Claude Code**: Native OTel integration; metrics, logs, and traces
 - **OpenClaw**: Full setup guide and Grafana dashboard; metrics and traces via OTel
 - **GitHub Copilot CLI**: Native OTel integration; metrics and traces (no logs signal); feature is very new and not yet in official web documentation
+- **Hermes Agent**: Native gateway monitoring export (metrics, traces, logs); structurally content-free (no capture-content option, unlike OpenClaw); setup guide and dashboard (`dashboards/hermes.json`)
