@@ -45,7 +45,7 @@ observing-agents/
 
 ## Tools covered
 
-- **OpenCode**: Metrics and logs via OTel plugin; traces present (root span names currently blank — known plugin issue)
+- **OpenCode**: Native OTel plugin; metrics, logs, and traces (session and LLM spans, no per-tool spans)
 - **Claude Code**: Native OTel integration; metrics, logs, and traces
 - **OpenClaw**: Full setup guide and Grafana dashboard; metrics and traces via OTel
 - **GitHub Copilot CLI**: Native OTel integration; metrics and traces (no logs signal); feature is very new and not yet in official web documentation

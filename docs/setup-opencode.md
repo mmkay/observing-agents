@@ -2,15 +2,17 @@
 
 Configuring [opencode](https://opencode.ai) (snap) with telemetry exported via the [`@devtheops/opencode-plugin-otel`](https://github.com/DEVtheOPS/opencode-plugin-otel) plugin.
 
-Any observability backend that accepts OTLP data can be used — Grafana Cloud, Datadog, Jaeger, SigNoz, or a self-hosted stack such as the [Canonical Observability Stack (COS)](https://charmhub.io/topics/canonical-observability-stack).
+Any observability backend that accepts OTLP data works: Grafana Cloud, Datadog, Jaeger, SigNoz, or a self-hosted stack such as the [Canonical Observability Stack (COS)](https://charmhub.io/topics/canonical-observability-stack).
 
 ## What is sent
 
 The plugin exports the following OTel signals:
 
-- **Metrics** (e.g. `opencode.session.count`, `opencode.token.usage`, `opencode.cost.usage`, `opencode.tool.duration`)
-- **Logs** (session events, API requests, tool results, commits)
-- **Traces** (session, LLM, and tool spans — e.g. `opencode.session`, `opencode.llm`, `opencode.tool.bash`)
+- **Metrics** (e.g. `opencode.session.count`, `opencode.token.usage`, `opencode.cost.usage`, `opencode.session.duration`, `opencode.model.usage`)
+- **Logs** (`session.created`, `user_prompt`, `api_request`, `tool_result`, `session.idle`, plus `session.error`, `api_error` and `commit` when they occur)
+- **Traces** (an `opencode.session` root span with one `opencode.llm` child span per LLM step)
+
+In a headless `opencode run` test (OpenCode 2.0.16, plugin 2.0.0), tool calls showed up only as `tool_result` log events. No per-tool spans (`opencode.tool.<name>`) and no `opencode.tool.duration` samples were exported.
 
 ## Configuration files
 
@@ -21,13 +23,26 @@ The plugin exports the following OTel signals:
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@devtheops/opencode-plugin-otel@1.5.1"]
+  "plugins": ["@devtheops/opencode-plugin-otel@2.0.0"]
 }
 ```
 
-> **Pin the version.** The npm `latest` tag for this plugin points to `2.0.0`, which targets **OpenCode V2** (`opencode-ai@2.x`, currently only on the `2/edge` snap channel) and uses the `plugins` config key instead of `plugin`. The snap `latest/stable` channel (and the npm `opencode-ai` `latest` tag) are on the 1.18.x (V1) line, which needs the `1.x` plugin release — an unpinned `"plugin": ["@devtheops/opencode-plugin-otel"]"` entry pulls in the incompatible `2.0.0` build the next time opencode's plugin cache is invalidated. Pin to the latest `1.x` release (`1.5.1`) until the CLI itself moves to V2.
+> **Pin the version.** OpenCode V2 (`opencode-ai@2.x`, the `2/stable` snap channel) needs plugin `2.x`. V2 accepts both the `plugins` key and the older `plugin` key, but the plugin major version has to match: loading `1.x` on V2 logs a `failed to load plugin` warning and no telemetry is exported. OpenCode V1 needs the `1.x` line (`"plugin": ["@devtheops/opencode-plugin-otel@1.5.1"]`). The npm `latest` dist-tag points to `2.0.0`. Pin the version anyway, so a future major release does not change behavior under you.
+>
+> Settings can also be passed inline instead of (or as well as) environment variables, using the plugin's object form; inline options take precedence over the matching `OPENCODE_*` variable:
+>
+> ```json
+> {
+>   "plugins": [
+>     {
+>       "package": "@devtheops/opencode-plugin-otel@2.0.0",
+>       "options": { "enabled": true, "metricPrefix": "opencode." }
+>     }
+>   ]
+> }
+> ```
 
-opencode resolves and caches the plugin package itself the first time it loads the config — no separate `npm install` step is needed or supported for the plugin entry above.
+opencode downloads and caches the plugin package itself the first time it loads the config, so the first start takes a few seconds longer. There is no separate `npm install` step for the plugin entry above.
 
 ### Environment variables
 
@@ -45,15 +60,15 @@ export OPENCODE_OTLP_LOGS_INTERVAL=1000
 |---|---|---|
 | `OPENCODE_ENABLE_TELEMETRY` | `1` | Enables the plugin |
 | `OPENCODE_OTLP_ENDPOINT` | `http://otelcol:4318` | Your OpenTelemetry Collector endpoint |
-| `OPENCODE_OTLP_PROTOCOL` | `http/protobuf` | Port 4318 is HTTP (not gRPC on 4317). Any other value selects gRPC, and the plugin's own default is gRPC on `localhost:4317` |
+| `OPENCODE_OTLP_PROTOCOL` | `http/protobuf` | One of `grpc`, `http/protobuf`, `http/json`. Port 4318 is HTTP; the plugin's own default is `grpc` on `localhost:4317` |
 | `OPENCODE_OTLP_METRICS_INTERVAL` | `15000` | 15 s; the plugin default is 60 s |
-| `OPENCODE_OTLP_LOGS_INTERVAL` | `1000` | 1 s; logs are event-driven, keep prompt. The plugin default is 5 s |
+| `OPENCODE_OTLP_LOGS_INTERVAL` | `1000` | 1 s; logs are event-driven, so keep it short. The plugin default is 5 s |
 
-> **Metric interval**: The default (60 s) is too long for short sessions, but 1 s generates unnecessary volume. 15 s is a reasonable balance for OpenCode. Do not rely on a flush at exit to make up for a long interval: a headless `opencode run` process exits as soon as its task completes, without flushing any pending metric or trace batch. Any metrics or spans queued for the next export tick — including the root `opencode.session` span and session-end metrics such as `opencode.session.duration` — are lost if the process exits before that tick fires (logs are less affected, thanks to their 1 s interval). Interactive sessions, which stay open past task completion, do not have this problem. If you script short `opencode run` invocations, lower `OPENCODE_OTLP_METRICS_INTERVAL` accordingly.
+> **Metric interval**: The plugin default (60 s) is too long for short sessions, and 1 s generates unnecessary volume. 15 s is a reasonable balance for OpenCode. A headless `opencode run` flushes pending metrics, logs and traces on exit: with a 15 s interval, a run lasting a few seconds still delivered the root `opencode.session` span and session-end metrics such as `opencode.session.duration`.
 
-> **Wire format**: With `OPENCODE_OTLP_PROTOCOL=http/protobuf` the plugin sends OTLP over HTTP with a JSON body (`Content-Type: application/json`). Collectors accept this on port 4318, so nothing needs to change, but do not expect protobuf on the wire.
+> **Wire format**: `OPENCODE_OTLP_PROTOCOL=http/protobuf` sends real binary protobuf over HTTP (`Content-Type: application/x-protobuf`) on port 4318. Use `http/json` instead if you specifically need a JSON body over HTTP.
 
-The plugin also supports optional variables not needed for the setup above: `OPENCODE_DISABLE_LOGS`, `OPENCODE_CAPTURE_PROMPT_IN_LOGS`, `OPENCODE_SPAN_ATTRIBUTES`, `OPENCODE_TRACEPARENT`, `OPENCODE_TRACESTATE`, and `OPENCODE_TRACE_PROPAGATION_PROVIDERS`. Every setting can also be passed inline through the plugin tuple form in `opencode.json`, see the [plugin README](https://github.com/DEVtheOPS/opencode-plugin-otel#readme).
+The plugin also supports optional variables not needed for the setup above: `OPENCODE_DISABLE_LOGS`, `OPENCODE_DISABLE_TRACES`, `OPENCODE_DISABLE_METRICS`, `OPENCODE_CAPTURE_PROMPT_IN_LOGS`, `OPENCODE_CAPTURE_MODEL_CONTEXT`, `OPENCODE_METRIC_PREFIX`, `OPENCODE_OTLP_HEADERS`, `OPENCODE_OTLP_HEADERS_HELPER`, `OPENCODE_RESOURCE_ATTRIBUTES`, `OPENCODE_SPAN_ATTRIBUTES`, `OPENCODE_OTLP_METRICS_TEMPORALITY`, `OPENCODE_TRACEPARENT`, `OPENCODE_TRACESTATE`, and `OPENCODE_TRACE_PROPAGATION_PROVIDERS`. Every setting can also be passed inline through the plugin's object form in `opencode.json`, see the [plugin README](https://github.com/DEVtheOPS/opencode-plugin-otel#readme).
 
 Both `.bashrc` and `.profile` should contain these exports so they are available in interactive shells and login/non-interactive shells alike.
 
@@ -68,15 +83,14 @@ opencode session
 
 ## LangFuse compatibility
 
-OpenCode is the richest LangFuse subject of the three agents covered in this repo. The plugin uses the **OpenInference** convention (`openinference.span.kind`, `llm.model_name`, `llm.system`), which LangFuse natively understands:
+The plugin uses the **OpenInference** convention (`openinference.span.kind`, `llm.model_name`, `llm.system`), which LangFuse natively understands:
 
 - `opencode.session` root spans carry `session.total_cost_usd` and `session.total_tokens` as metadata attributes. LangFuse's own cost and token roll-ups are computed by aggregating the child `opencode.llm` generation spans (which carry `llm.token_count.prompt` / `llm.token_count.completion`), not from these session-level attributes directly.
-- Tool calls are typed granularly (`opencode.tool.read`, `opencode.tool.grep`, `opencode.tool.bash`, `opencode.tool.write`, etc.) and appear as distinct span types in the session view.
-- LLM generation spans carry `llm.model_name` — LangFuse renders the model name without extra configuration.
+- LLM generation spans carry `llm.model_name`, and LangFuse renders it without extra configuration.
 
-There is no content-capture switch for spans: `input.value` / `output.value` (and `tool.parameters`, plus `llm.input_messages` on LLM spans) are present by default, so LangFuse shows conversation content out of the box. The plugin has no `captureContent` option to turn this off.
+There is no content-capture switch for spans: `input.value` / `output.value` (plus `llm.input_messages` on LLM spans) are present by default, so LangFuse shows conversation content out of the box. The plugin has no `captureContent` option to turn this off.
 
-Prompt text in **log events** is a separate matter. The `user_prompt` event carries only `prompt_length` unless you set `OPENCODE_CAPTURE_PROMPT_IN_LOGS` (see the plugin README). That variable does not affect spans. Prompts and tool arguments reach your backend through traces regardless, so only send them to a collector you trust.
+Prompt text in **log events** is a separate matter. The `user_prompt` event carries only `prompt_length` unless you set `OPENCODE_CAPTURE_PROMPT_IN_LOGS` (see the plugin README). That variable does not affect spans. Prompts and model output reach your backend through traces regardless, so only send them to a collector you trust.
 
 ## Troubleshooting
 
