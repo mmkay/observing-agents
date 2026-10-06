@@ -173,6 +173,7 @@
         addSlideClass('01-disclaimer.md', 'slide-disclaimers');
         addSlideClass('03-observability.md', 'slide-dense');
         addSlideClass('05-task.md', 'slide-dense');  // too much content for default sizing
+        addSlideClass('15-hermes.md', 'slide-wide');  // short, wide screenshot: stretch to fill the width
 
         Reveal.initialize({
           plugins: [RevealMarkdown, RevealNotes],
