@@ -171,9 +171,9 @@
         };
         addSlideClass('00-title.md', 'slide-title');
         addSlideClass('01-disclaimer.md', 'slide-disclaimers');
-        addSlideClass('02-openclaw.md', 'slide-wide');   // openclaw-prompt.png is tiny — needs width: 90%
-        addSlideClass('04-observability.md', 'slide-dense');
-        addSlideClass('08-task.md', 'slide-dense');  // too much content for default sizing
+        addSlideClass('03-observability.md', 'slide-dense');
+        addSlideClass('05-task.md', 'slide-dense');  // too much content for default sizing
+        addSlideClass('15-hermes.md', 'slide-wide');  // short, wide screenshot: stretch to fill the width
 
         Reveal.initialize({
           plugins: [RevealMarkdown, RevealNotes],
