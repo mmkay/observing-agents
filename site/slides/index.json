@@ -1,7 +1,6 @@
 [
   "00-title.md",
   "01-disclaimer.md",
-  "02-openclaw.md",
   "03-premise.md",
   "04-observability.md",
   "07-traces.md",
@@ -15,7 +14,8 @@
   "14-data-metrics-copilot.md",
   "15-data-metrics-red.md",
   "16-data-openclaw-burn.md",
-  "17-data-metrics-roast.md",
+  "17-hermes.md",
+  "17a-openrouter.md",
   "18-data-logs.md",
   "19-traces-full.md",
   "20-traces-claude.md",

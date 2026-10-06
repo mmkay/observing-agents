@@ -1,6 +1,6 @@
 # This year, LLM-based agents are everywhere.
 
-- the most popular ones appear to be pretty much a closed box. **Claude Code is a propietary 230MB binary that auto-downloads new versions to your machine.**
+- the most popular ones appear to be pretty much a closed box. **Claude Code is a propietary 250MB+ binary that auto-downloads new versions to your machine.**
 - I've been working as an observability engineer for 8 years
 - I like to know if things work - and spot the issues early
 - ...and I also like open source software and open standards

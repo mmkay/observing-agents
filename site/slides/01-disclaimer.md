@@ -2,7 +2,7 @@
 
 Agents helped write the docs, but they didn't write the slides' contents. 
 
-As everything around agents changes at an incredible pace, things change - things are shown as they were in May/June '26. Check the website for updates.
+As everything around agents changes at an incredible pace, things change - things are shown as they were in October '26. Check the website for updates.
 
 We'll focus on CLI coding agents here: Claude Code / Github Copilot / OpenCode and the likes.
 
