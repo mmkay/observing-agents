@@ -11,7 +11,7 @@
 - Github Copilot
 - OpenCode
 - Claude Code
-- OpenClaw
+- OpenClaw / Hermes
 
 ## I want the details to be as generic as possible - no vendor lock-in, you can use any observability product
 

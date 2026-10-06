@@ -7,7 +7,10 @@ flowchart LR
         OC["OpenCode\nopencode-plugin-otel"]
         OCL["OpenClaw\ndiagnostics-otel"]
         GHC["GitHub Copilot CLI\nnative OTel SDK"]
+        HER["Hermes Agent\ngateway monitoring export"]
     end
+
+    OR["OpenRouter\noptional LLM gateway"]
 
     otelcol["OpenTelemetry Collector\notelcol-k8s"]
 
@@ -28,6 +31,8 @@ flowchart LR
     OC -- "metrics · logs · traces\nOTLP HTTP" --> otelcol
     OCL -- "metrics · logs · traces\nOTLP HTTP" --> otelcol
     GHC -- "metrics · traces\nOTLP HTTP" --> otelcol
+    HER -- "metrics · logs · traces\nOTLP HTTP" --> otelcol
+    agents -. "LLM requests" .-> OR
 
     otelcol -- metrics --> Prometheus
     otelcol -- logs --> Loki
