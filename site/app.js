@@ -213,6 +213,66 @@
       });
   }
 
+  // ── Speaker view previews ────────────────────────────
+  //
+  // The speaker window embeds the current/upcoming slide in iframes much
+  // smaller than the presenting window. Reveal is configured with
+  // width/height 100% and the CSS uses vh units, so a small iframe would
+  // re-flow (and clip) the slide instead of shrinking it. To keep the
+  // previews faithful, the presenting window publishes its viewport size and
+  // each preview iframe lays itself out at that size, then scales to fit.
+
+  const VIEWPORT_KEY = 'ao-presenter-viewport';
+  const DEFAULT_VIEWPORT = { w: 1920, h: 1080 };
+
+  function publishViewport() {
+    const save = () => {
+      try {
+        localStorage.setItem(VIEWPORT_KEY, JSON.stringify({ w: window.innerWidth, h: window.innerHeight }));
+      } catch (e) { /* storage unavailable: previews fall back to 1920x1080 */ }
+    };
+    save();
+    window.addEventListener('resize', save);
+  }
+
+  function readViewport() {
+    try {
+      const v = JSON.parse(localStorage.getItem(VIEWPORT_KEY));
+      if (v && v.w > 0 && v.h > 0) return v;
+    } catch (e) { /* fall through */ }
+    return DEFAULT_VIEWPORT;
+  }
+
+  function initPreviewFit() {
+    let frame, box;
+    try {
+      frame = window.frameElement;
+      box = frame && frame.parentElement;
+    } catch (e) { return; }  // cross-origin parent
+    if (!box) return;
+
+    const fit = () => {
+      const { w, h } = readViewport();
+      const cs = getComputedStyle(box);
+      const availW = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const availH = box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      if (availW <= 0 || availH <= 0) return;
+      const scale = Math.min(availW / w, availH / h);
+      Object.assign(frame.style, {
+        display: 'block',
+        boxSizing: 'border-box',
+        width: w + 'px',
+        height: h + 'px',
+        transformOrigin: '0 0',
+        transform: 'translate(' + ((availW - w * scale) / 2) + 'px, ' + ((availH - h * scale) / 2) + 'px) scale(' + scale + ')',
+      });
+    };
+
+    fit();
+    window.parent.addEventListener('resize', fit);
+    window.addEventListener('storage', e => { if (e.key === VIEWPORT_KEY) fit(); });
+  }
+
   // ── Boot ─────────────────────────────────────────────
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -224,6 +284,8 @@
     initTheme();
     initNav();
     const params = new URLSearchParams(window.location.search);
+    if (params.has('receiver')) initPreviewFit();
+    else publishViewport();
     const isRevealEmbed = params.has('postMessageEvents') || params.get('controls') === 'false';
     showSection(isRevealEmbed ? 'slides' : 'about');
   });
