@@ -16,7 +16,7 @@
 
 ## They are much heavier than any traces you've seen earlier
 
-## For content-free tools, you can use a gateway
+## For tools with worse o11y support, you can use a gateway
 
 # Full setup at **mmkay.github.io/observing-agents**
 
@@ -31,6 +31,6 @@ Most of the tools use common telemetry patterns
 
 Traces are the most interesting
 They are much heavier than any traces you've seen earlier
-For content-free tools, you can use a gateway
+For tools that aren't that great with observability, you can consider using a gateway
 
 Full setup at **mmkay.github.io/observing-agents**

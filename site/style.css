@@ -391,6 +391,13 @@ body.slides-active #slides-back-btn {
   max-width: 90%;
 }
 
+.reveal .slides section.slide-big-image img {
+  height: 50vh;
+  max-height: 50vh;
+  width: auto;
+  max-width: 96%;
+}
+
 /* ── Mermaid in slides ───────────────────────────────── */
 
 /* Mermaid sizes foreignObject from generic metrics; IBM Plex Mono is ~10px taller,
