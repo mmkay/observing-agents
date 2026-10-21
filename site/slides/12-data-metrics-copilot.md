@@ -7,4 +7,4 @@
 Note:
 If you want to see which tools your agent has been using and how long each one took, GitHub Copilot's metrics can provide that. This is a good place to look for performance bottlenecks in your agent's tool use - for instance, spotting which tool calls are unexpectedly slow or failing at a high rate.
 
-It wasn't mentioned anywhere in the official docs - I found out about it by accident because it uses the same environment variables as OpenClaw. 
+Even though I found it in June, it still isn't mentioned anywhere in the official docs - I found out about it by accident because it uses the same environment variables as OpenClaw. 

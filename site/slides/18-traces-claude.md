@@ -12,6 +12,6 @@ export OTEL_LOG_TOOL_CONTENT=1      # Include tool output in trace spans
 Note:
 Claude's traces contents are complex: their traces have several metrics that can help you in understanding whether their models are performing well: we get the token counts, even time to first token is one of the values in the span. They however also log quite a lot of sensitive data that I felt like I should probably cut some of it from the screenshots.
 
-While most of the industry has started to use a shared naming scheme for the token-related values, they start theirs with `gen_ai_`, this is not the case for Claude. It means that the tools that use these conventions will not detect Claude's LLM calls in the same manner as the others.
+While most of the industry has started to use a shared naming scheme for the token-related values, they start theirs with `gen_ai_`, this is not the case for Claude. It means that the tools that use these conventions will not detect Claude's LLM calls in the same manner as the others. They have, however, added support in other parts.
 
 You can make also make the telemetry much more verbose by asking it to log almost everything: prompts, responses, tool call arguments and results, even raw API bodies. Prompts and tool details show up both in the logs and in the traces, tool output is only in the traces, and raw API bodies are only in the logs. It also, however, comes with privacy concerns - especially if you don't own your observability stack. And even without any of these flags, your account email is attached to every signal.

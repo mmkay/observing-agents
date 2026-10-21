@@ -23,4 +23,4 @@ def setup_otel(otel_endpoint: str, service_name: str) -> None:
 ```
 
 Note:
-This is an example for Python using Traceloop's SDK also known as OpenLLMetry, but the drill is similar to basically any large library, including LangChain. You usually add a dependency that exports traces or enable a config property in your application, initialize an instrumenting library and your LLM calls are auto-instrumented. Usually together with the prompts contents, the token count and other calls in your system as tracing is well supported in most frameworks.
+What if you write something custom? This is an example for Python using Traceloop's SDK also known as OpenLLMetry, but the drill is similar to basically any large library, including LangChain. You usually add a dependency that exports traces or enable a config property in your application, initialize an instrumenting library and your LLM calls are auto-instrumented. Usually together with the prompts contents, the token count and other calls in your system as tracing is well supported in most frameworks.

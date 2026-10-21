@@ -1,6 +1,6 @@
 # Summary
 
-## Yes, you can observe agents, but:
+## You can observe agents, but:
 
 ### Traces are expensive
 
@@ -21,7 +21,8 @@
 # Full setup at **mmkay.github.io/observing-agents**
 
 Note:
-Yes, you can observe agents, but:
+As we reach the summary part, it's time to gather the findings.
+
 Traces are expensive
 Logs can be skipped
 You need to remember about the privacy concerns
@@ -33,4 +34,4 @@ Traces are the most interesting
 They are much heavier than any traces you've seen earlier
 For tools that aren't that great with observability, you can consider using a gateway
 
-Full setup at **mmkay.github.io/observing-agents**
+You can see all slides as well as some docs and custom dashboards you can import into your Grafana on my website.

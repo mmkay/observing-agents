@@ -7,8 +7,8 @@ As everything around agents changes at an incredible pace, things change - thing
 We'll focus on CLI coding agents here: Claude Code / Github Copilot / OpenCode and the likes.
 
 Note:
-But first, a few disclaimers. Given this whole story is about software agents, they have of course been used in its preparation. There is a companion website where a big part of the references have been written by agents based on the results of a setup that has actually been done on my machine, but things have been reviewed. And when it comes to the contents of this presentation, it has been written completely by me: with some significant web development / CSS help from the LLMs.
+We will start with a few disclaimers. Given this whole story is about software agents, they have of course been used in its preparation. There is a companion website where a big part of the references have been written by agents based on the results of a setup that has actually been done on my machine, but things have been reviewed. And when it comes to the contents of this presentation, it has been written completely by me: with some significant web development help from the LLMs.
 
-And of course - if you watch this presentation any later than today, things may no longer work as expected. The rate of change in this area is surprising. There is a companion website that I'll try to update, but no huge promises.
+And of course - if you watch this presentation any later than today, things may no longer work as expected. The rate of change in this area is surprising. There is a companion website that I'm sometimes updating, but no promises on being cutting-edge there.
 
 We will focus on the CLI coding agents in this talk as these are the ones that were the most interesting to me as a software engineer. I'll briefly mention what to do in case you build your custom harness, but there were deeper talks around this subject here.

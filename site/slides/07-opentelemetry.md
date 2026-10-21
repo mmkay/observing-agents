@@ -1,4 +1,4 @@
-# Good news - they all use OpenTelemetry
+# Good news - all coding agents use OpenTelemetry
 
 ## Example: Claude Code
 
@@ -27,4 +27,4 @@ export OTEL_TRACES_EXPORT_INTERVAL=1000
 ```
 
 Note:
-The first good news that I had was that many coding agents now support OpenTelemetry - and most of them even do it out of the box. In case of the best harnesses, the only thing that you needed to set up is enabling some feature flags and pointing them at my instance of OpenTelemetry Collector - and all of that was done using environment variables. You could get metrics, logs and traces that way.
+When I started working with coding agents, the first good news that I had was that many coding agents now support OpenTelemetry - and most of them even do it out of the box. In case of the best harnesses, the only thing that you needed to set up is enabling some feature flags and pointing them at my instance of OpenTelemetry Collector - and all of that was done using environment variables. You could get metrics, logs and traces that way.
